@@ -1,0 +1,101 @@
+/* General Styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(-45deg, #1f1c2c, #928dab, #1f1c2c, #3f0d12);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+  color: #e7dfdd;
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.homepage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header Styles */
+.header {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: transparent;
+}
+
+.title {
+  font-size: 3rem;
+  margin: 0;
+  color: #e7dfdd;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #c9c9c9;
+}
+
+/* Main Content Styles */
+.main-content {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Gradient Animation */
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 100%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 0%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Info Section */
+.info-section {
+  position: relative;
+  text-align: center;
+  max-width: 800px;
+  width: 90%;
+  padding: 2rem;
+  backdrop-filter: blur(5px);
+  background-color: rgba(14, 11, 22, 0.6);
+  border-radius: 10px;
+  color: #e7dfdd;
+  margin: 2rem auto; /* Center and add spacing */
+  z-index: 1; /* Ensure it stays above the background */
+}
+
+/* NFT Display Styles */
+.nft-display {
+  text-align: center;
+  margin: 0 auto; /* Center the nft-display block */
+}
+
+.nft-image {
+  max-width: 300px;
+  width: 100%;
+  border-radius: 10px;
+  margin: 1rem 0;
+}
+
+/* Footer Styles */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: rgba(31, 28, 44, 0.8);
+  color: #c9c9c9;
+}
