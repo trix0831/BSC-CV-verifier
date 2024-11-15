@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './HomePage.css';
+import './css/HomePage.css';
 import { ethers } from 'ethers';
 import { abi } from './abi';
 
@@ -45,8 +45,8 @@ function HomePage() {
   return (
     <div className="homepage">
       <header className="header">
-        <h1 className="title">BlockVerse</h1>
-        <p className="subtitle">Experience the Future of Decentralization</p>
+        <h1 className="title">CV Verifier</h1>
+        <p className="subtitle">Experience the Future of Decentralization. Be your own verifier.</p>
       </header>
       <main className="main-content">
         <section className="info-section">
@@ -71,7 +71,7 @@ function HomePage() {
         </section>
       </main>
       <footer className="footer">
-        <p>HAHAHAHA</p>
+        <p>trix hahaha FOR Taipei blockchain week</p>
       </footer>
     </div>
   );

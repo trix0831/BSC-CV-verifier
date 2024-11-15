@@ -1,0 +1,95 @@
+/* NFTUploadForm.css */
+
+.futuristic-container {
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+    border: 2px solid #00fff0;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 50px auto;
+    box-shadow: 0px 0px 20px #00fff0;
+    color: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .futuristic-title {
+    text-align: center;
+    color: #00fff0;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  
+  .futuristic-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .futuristic-input-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #00e6e6;
+  }
+  
+  .futuristic-input, .futuristic-textarea, .futuristic-file-input {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #00fff0;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .futuristic-input:focus, .futuristic-textarea:focus, .futuristic-file-input:focus {
+    border-color: #ff00ff;
+  }
+  
+  .futuristic-textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  
+  .futuristic-button {
+    background: #00fff0;
+    border: none;
+    color: #0d0d0d;
+    font-size: 1.2rem;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  .futuristic-button:hover {
+    background: #ff00ff;
+    transform: scale(1.05);
+  }
+  
+  .futuristic-status {
+    text-align: center;
+    color: #00ff99;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+  @media (max-width: 600px) {
+    .futuristic-container {
+      padding: 20px;
+    }
+  
+    .futuristic-title {
+      font-size: 1.5rem;
+    }
+  
+    .futuristic-button {
+      font-size: 1rem;
+      padding: 10px;
+    }
+  }
