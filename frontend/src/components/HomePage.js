@@ -5,10 +5,10 @@ import { abi } from './abi';
 
 function HomePage() {
   const [nftData, setNftData] = useState(null);
-  const contractAddress = '0x4232b1357eF1Bbd178EF5bCe7A0ACD7c8e3878c1'; // Your contract address
+  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+  const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
   const contractABI = abi;
-  const provider = new ethers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545/');
-  const tokenId = 1;
+  const tokenId = 0;
 
   useEffect(() => {
     const fetchNFTData = async () => {
@@ -38,7 +38,6 @@ function HomePage() {
         console.error('Error fetching NFT data:', error);
       }
     };
-
     fetchNFTData();
   }, []);
 

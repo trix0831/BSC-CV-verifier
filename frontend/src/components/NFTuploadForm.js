@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './css/NFTUploadForm.css';
+import { ethers } from "ethers";
+import { abi } from './abi';
 
 function NFTUploadForm() {
   const [name, setName] = useState('');
@@ -13,9 +15,29 @@ function NFTUploadForm() {
   const [issuerAddress, setIssuerAddress] = useState('');
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState('');
-  const REACT_APP_PINATA_API_KEY="7c325a1ae342171ac341"
-  const REACT_APP_PINATA_SECRET_API_KEY="7ffc88092c6365110eaf827df719c07c199d92f8f07f0cb44d32383552253b73"
+  const REACT_APP_PINATA_API_KEY = process.env.REACT_APP_PINATA_API_KEY
+  const REACT_APP_PINATA_SECRET_API_KEY = process.env.REACT_APP_PINATA_SECRET_API_KEY
 
+  const privateKey = process.env.REACT_APP_PRIVATE_KEY ; 
+  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+  const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
+  const signer = new ethers.Wallet(privateKey, provider);
+  const contractABI = abi;
+  
+  const contract = new ethers.Contract(contractAddress, contractABI, signer);
+  
+  async function mintNFT(to, uri) {
+    try {
+        const mintingFee = await contract.mintingFee();
+        const tx = await contract.safeMint(to, uri, {
+            value: mintingFee,
+        });
+        await tx.wait();
+        console.log("Minting successful!");
+    } catch (error) {
+        console.error("Minting failed:", error);
+    }
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,6 +90,7 @@ function NFTUploadForm() {
 
       const metadataUrl = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`;
       setUploadStatus(<a href={metadataUrl} target="_blank" rel="noopener noreferrer">Metadata URL: {metadataUrl}</a>);
+      await mintNFT(issuerAddress, metadataUrl)
       // setUploadStatus(`Metadata URL: https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`);
     } catch (error) {
       setUploadStatus('Failed to upload. Please try again.');
