@@ -1,9 +1,10 @@
 // App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Main from './Main';
+import Main from './components/Main';
 import NFTUploadForm from './components/NFTuploadForm';
 import HomePage from './components/HomePage';
+import './App.css';
 
 function App() {
   return (
