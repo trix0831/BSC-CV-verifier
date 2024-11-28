@@ -5,92 +5,153 @@ import { ethers } from "ethers";
 import { abi } from './abi';
 
 function NFTUploadForm() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [competitionName, setCompetitionName] = useState('');
-  const [organizer, setOrganizer] = useState('');
-  const [officialWeb, setOfficialWeb] = useState('');
-  const [award, setAward] = useState('');
-  const [honoree, setHonoree] = useState('');
-  const [issuerAddress, setIssuerAddress] = useState('');
-  const [file, setFile] = useState(null);
+  const [metadataEntries, setMetadataEntries] = useState([{
+    name: '',
+    description: '',
+    competitionName: '',
+    organizer: '',
+    officialWeb: '',
+    award: '',
+    honoree: '',
+    issuerAddress: '',
+    file: null,
+    errors: {}
+  }]);
   const [uploadStatus, setUploadStatus] = useState('');
-  const [showDialog, setShowDialog] = useState(false);  // State for controlling the dialog visibility
-  const [missingFields, setMissingFields] = useState([]); // To track missing fields
-  
+  const [showDialog, setShowDialog] = useState(false);
+
   const REACT_APP_PINATA_API_KEY = process.env.REACT_APP_PINATA_API_KEY
   const REACT_APP_PINATA_SECRET_API_KEY = process.env.REACT_APP_PINATA_SECRET_API_KEY
 
   // Handle confirmation dialog
   const handleDialogClose = (confirm) => {
-    setShowDialog(false); // Close the dialog
+    setShowDialog(false);
     if (confirm) {
-      handleSubmit();  // Proceed with the upload if confirmed
+      handleSubmit();
     }
   };
 
-  const checkMissingFields = () => {
-    const missing = [];
-    if (!name) missing.push('Name');
-    if (!description) missing.push('Description');
-    if (!competitionName) missing.push('Competition Name');
-    if (!organizer) missing.push('Organizer');
-    if (!officialWeb) missing.push('Official Web');
-    if (!award) missing.push('Award');
-    if (!honoree) missing.push('Honoree');
-    if (!issuerAddress) missing.push('Issuer Address');
-    if (!file) missing.push('Image');
-    return missing;
+  // Update a specific metadata entry
+  const updateMetadataEntry = (index, field, value) => {
+    const newEntries = [...metadataEntries];
+    newEntries[index] = { 
+      ...newEntries[index], 
+      [field]: value,
+      errors: {
+        ...newEntries[index].errors,
+        [field]: false
+      }
+    };
+    setMetadataEntries(newEntries);
+  };
+
+  // Add a new metadata entry
+  const addMetadataEntry = () => {
+    setMetadataEntries([...metadataEntries, {
+      name: '',
+      description: '',
+      competitionName: '',
+      organizer: '',
+      officialWeb: '',
+      award: '',
+      honoree: '',
+      issuerAddress: '',
+      file: null,
+      errors: {}
+    }]);
+  };
+
+  // Remove a metadata entry
+  const removeMetadataEntry = (index) => {
+    const newEntries = metadataEntries.filter((_, i) => i !== index);
+    setMetadataEntries(newEntries);
+  };
+
+  const validateEntries = () => {
+    const updatedEntries = metadataEntries.map(entry => {
+      const errors = {};
+      
+      // Check each field
+      if (!entry.name) errors.name = true;
+      if (!entry.description) errors.description = true;
+      if (!entry.competitionName) errors.competitionName = true;
+      if (!entry.organizer) errors.organizer = true;
+      if (!entry.officialWeb) errors.officialWeb = true;
+      if (!entry.award) errors.award = true;
+      if (!entry.honoree) errors.honoree = true;
+      if (!entry.issuerAddress) errors.issuerAddress = true;
+      if (!entry.file) errors.file = true;
+
+      return {
+        ...entry,
+        errors
+      };
+    });
+
+    setMetadataEntries(updatedEntries);
+
+    // Check if any errors exist
+    return !updatedEntries.some(entry => Object.keys(entry.errors).length > 0);
   };
 
   const handleSubmit = async () => {
-    if (!file) {
-      setUploadStatus('Please select a file to upload.');
-      return;
-    }
-
     setUploadStatus('Uploading...');
+    const uploadPromises = metadataEntries.map(async (entry) => {
+      const formData = new FormData();
+      formData.append('file', entry.file);
 
-    const formData = new FormData();
-    formData.append('file', file);
+      try {
+        // Upload image to Pinata
+        const imageResponse = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
+            'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
+          }
+        });
+
+        const imageHash = imageResponse.data.IpfsHash;
+        const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
+
+        // Create metadata JSON
+        const metadata = {
+          name: entry.name,
+          description: entry.description,
+          competition_name: entry.competitionName,
+          organizer: entry.organizer,
+          official_web: entry.officialWeb,
+          award: entry.award,
+          honoree: entry.honoree,
+          image: imageUrl,
+          issuer_address: entry.issuerAddress
+        };
+
+        // Upload metadata to Pinata
+        const metadataResponse = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', metadata, {
+          headers: {
+            'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
+            'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
+          }
+        });
+
+        return `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`;
+      } catch (error) {
+        return `Upload failed for ${entry.name}`;
+      }
+    });
 
     try {
-      // Upload image to Pinata
-      const imageResponse = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
-          'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
-        }
-      });
-
-      const imageHash = imageResponse.data.IpfsHash;
-      const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
-
-      // Create metadata JSON
-      const metadata = {
-        name: name,
-        description: description,
-        competition_name: competitionName,
-        organizer: organizer,
-        official_web: officialWeb,
-        award: award,
-        honoree: honoree,
-        image: imageUrl,
-        issuer_address: issuerAddress
-      };
-
-      // Upload metadata to Pinata
-      const metadataResponse = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', metadata, {
-        headers: {
-          'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
-          'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
-        }
-      });
-
-      const metadataUrl = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`;
-      setUploadStatus(<a href={metadataUrl} target="_blank" rel="noopener noreferrer">Metadata URL: {metadataUrl}</a>);
-      
+      const results = await Promise.all(uploadPromises);
+      setUploadStatus(
+        <div>
+          <p>Upload Results:</p>
+          <ul>
+            {results.map((url, index) => (
+              <li key={index}>{metadataEntries[index].name}: {url}</li>
+            ))}
+          </ul>
+        </div>
+      );
     } catch (error) {
       setUploadStatus('Failed to upload. Please try again.');
     }
@@ -99,149 +160,186 @@ function NFTUploadForm() {
   const handleUpload = (e) => {
     e.preventDefault();
     
-    const missing = checkMissingFields();
-    setMissingFields(missing);
+    const isValid = validateEntries();
     
-    if (missing.length === 0) {
-      setShowDialog(true);  // Show the confirmation dialog if all fields are filled
-    } else {
-      setShowDialog(false);  // Hide dialog if fields are missing
+    if (isValid) {
+      setShowDialog(true);
     }
   };
 
   return (
     <div className="nft-upload-form futuristic-container">
       <h2 className="futuristic-title">Upload NFT Metadata</h2>
-      <form onSubmit={handleUpload} className="futuristic-form">
-        <div className="futuristic-input-group">
-          <label>Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="futuristic-input"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Description:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            className="futuristic-textarea"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Competition Name:</label>
-          <input
-            type="text"
-            value={competitionName}
-            onChange={(e) => setCompetitionName(e.target.value)}
-            required
-            className="futuristic-input"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Organizer:</label>
-          <input
-            type="text"
-            value={organizer}
-            onChange={(e) => setOrganizer(e.target.value)}
-            required
-            className="futuristic-input"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Official Web:</label>
-          <input
-            type="text"
-            value={officialWeb}
-            onChange={(e) => setOfficialWeb(e.target.value)}
-            required
-            className="futuristic-input"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Award:</label>
-          <input
-            type="text"
-            value={award}
-            onChange={(e) => setAward(e.target.value)}
-            required
-            className="futuristic-input"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Honoree:</label>
-          <input
-            type="text"
-            value={honoree}
-            onChange={(e) => setHonoree(e.target.value)}
-            required
-            className="futuristic-input"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Issuer's Address:</label>
-          <input
-            type="text"
-            value={issuerAddress}
-            onChange={(e) => setIssuerAddress(e.target.value)}
-            required
-            className="futuristic-input"
-          />
-        </div>
-        <div className="futuristic-input-group">
-          <label>Upload Image:</label>
-          <input
-            type="file"
-            onChange={(e) => setFile(e.target.files[0])}
-            required
-            className="futuristic-file-input"
-          />
-        </div>
-        <button type="submit" className="futuristic-button">Show Confirmation</button>
-      </form>
+      <div className="metadata-entries-container">
+        {metadataEntries.map((entry, index) => (
+          <div key={index} className={`metadata-entry ${Object.keys(entry.errors).length > 0 ? 'has-errors' : ''}`}>
+            <div className="entry-header">
+              <h3>Entry {index + 1}</h3>
+              {metadataEntries.length > 1 && (
+                <button 
+                  onClick={() => removeMetadataEntry(index)} 
+                  className="futuristic-button remove-entry-button"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+            {/* Restore all previous input fields with error handling */}
+            <div className={`futuristic-input-group ${entry.errors.name ? 'error' : ''}`}>
+              <label>Name:</label>
+              <input
+                type="text"
+                value={entry.name}
+                onChange={(e) => updateMetadataEntry(index, 'name', e.target.value)}
+                required
+                className="futuristic-input"
+              />
+              {entry.errors.name && <span className="error-message">Name is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.description ? 'error' : ''}`}>
+              <label>Description:</label>
+              <textarea
+                value={entry.description}
+                onChange={(e) => updateMetadataEntry(index, 'description', e.target.value)}
+                required
+                className="futuristic-textarea"
+              />
+              {entry.errors.description && <span className="error-message">Description is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.competitionName ? 'error' : ''}`}>
+              <label>Competition Name:</label>
+              <input
+                type="text"
+                value={entry.competitionName}
+                onChange={(e) => updateMetadataEntry(index, 'competitionName', e.target.value)}
+                required
+                className="futuristic-input"
+              />
+              {entry.errors.competitionName && <span className="error-message">Competition Name is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.organizer ? 'error' : ''}`}>
+              <label>Organizer:</label>
+              <input
+                type="text"
+                value={entry.organizer}
+                onChange={(e) => updateMetadataEntry(index, 'organizer', e.target.value)}
+                required
+                className="futuristic-input"
+              />
+              {entry.errors.organizer && <span className="error-message">Organizer is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.officialWeb ? 'error' : ''}`}>
+              <label>Official Web:</label>
+              <input
+                type="text"
+                value={entry.officialWeb}
+                onChange={(e) => updateMetadataEntry(index, 'officialWeb', e.target.value)}
+                required
+                className="futuristic-input"
+              />
+              {entry.errors.officialWeb && <span className="error-message">Official Web is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.award ? 'error' : ''}`}>
+              <label>Award:</label>
+              <input
+                type="text"
+                value={entry.award}
+                onChange={(e) => updateMetadataEntry(index, 'award', e.target.value)}
+                required
+                className="futuristic-input"
+              />
+              {entry.errors.award && <span className="error-message">Award is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.honoree ? 'error' : ''}`}>
+              <label>Honoree:</label>
+              <input
+                type="text"
+                value={entry.honoree}
+                onChange={(e) => updateMetadataEntry(index, 'honoree', e.target.value)}
+                required
+                className="futuristic-input"
+              />
+              {entry.errors.honoree && <span className="error-message">Honoree is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.issuerAddress ? 'error' : ''}`}>
+              <label>Issuer's Address:</label>
+              <input
+                type="text"
+                value={entry.issuerAddress}
+                onChange={(e) => updateMetadataEntry(index, 'issuerAddress', e.target.value)}
+                required
+                className="futuristic-input"
+              />
+              {entry.errors.issuerAddress && <span className="error-message">Issuer Address is required</span>}
+            </div>
+            <div className={`futuristic-input-group ${entry.errors.file ? 'error' : ''}`}>
+              <label>Upload Image:</label>
+              <input
+                type="file"
+                onChange={(e) => updateMetadataEntry(index, 'file', e.target.files[0])}
+                required
+                className="futuristic-file-input"
+              />
+              {entry.errors.file && <span className="error-message">Image is required</span>}
+              {entry.file && (
+                <img 
+                  src={URL.createObjectURL(entry.file)} 
+                  alt="Preview" 
+                  className="file-preview" 
+                  width="100" 
+                />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="form-actions">
+        <button 
+          type="button" 
+          onClick={addMetadataEntry} 
+          className="futuristic-button add-entry-button"
+        >
+          Add Another Entry
+        </button>
+        <button 
+          type="submit" 
+          onClick={handleUpload} 
+          className="futuristic-button submit-button"
+        >
+          Show Confirmation
+        </button>
+      </div>
 
       {uploadStatus && <p className="futuristic-status">{uploadStatus}</p>}
 
       {/* Confirmation Dialog */}
       {showDialog && (
         <div className="confirmation-overlay">
-          <div className="confirmation-dialog">
-            <h3>Are you sure you want to upload the metadata?</h3>
-
-            {/* Show missing fields */}
-            {missingFields.length > 0 ? (
-              <div>
-                <p>The following fields are missing:</p>
-                <ul>
-                  {missingFields.map((field, index) => (
-                    <li key={index}>{field}</li>
-                  ))}
-                </ul>
-                <button disabled className="futuristic-button">Upload Disabled</button>
-              </div>
-            ) : (
-              <div>
-                <p>Here is the data that will be uploaded:</p>
-                <ul>
-                  <li>Name: {name}</li>
-                  <li>Description: {description}</li>
-                  <li>Competition Name: {competitionName}</li>
-                  <li>Organizer: {organizer}</li>
-                  <li>Official Web: {officialWeb}</li>
-                  <li>Award: {award}</li>
-                  <li>Honoree: {honoree}</li>
-                  <li>Issuer Address: {issuerAddress}</li>
-                  <li>Image: <img src={file ? URL.createObjectURL(file) : ''} alt="Preview" width="100" /></li>
-                </ul>
-                <button onClick={() => handleDialogClose(true)} className="futuristic-button">Yes, Upload</button>
-              </div>
-            )}
-
-            <button onClick={() => handleDialogClose(false)} className="futuristic-button">Cancel</button>
+          <div className="confirmation-dialog scrollable-dialog">
+            <h3>Confirm Metadata Upload</h3>
+            <div className="confirmation-content">
+              {metadataEntries.map((entry, index) => (
+                <div key={index} className="confirmation-entry">
+                  <h4>Entry {index + 1}</h4>
+                  <ul>
+                    <li>Name: {entry.name}</li>
+                    <li>Description: {entry.description}</li>
+                    <li>Competition Name: {entry.competitionName}</li>
+                    <li>Organizer: {entry.organizer}</li>
+                    <li>Official Web: {entry.officialWeb}</li>
+                    <li>Award: {entry.award}</li>
+                    <li>Honoree: {entry.honoree}</li>
+                    <li>Issuer Address: {entry.issuerAddress}</li>
+                    <li>Image: <img src={entry.file ? URL.createObjectURL(entry.file) : ''} alt="Preview" width="100" /></li>
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="dialog-actions">
+              <button onClick={() => handleDialogClose(true)} className="futuristic-button">Yes, Upload</button>
+              <button onClick={() => handleDialogClose(false)} className="futuristic-button">Cancel</button>
+            </div>
           </div>
         </div>
       )}

@@ -1,124 +1,255 @@
 /* NFTUploadForm.css */
 
 .futuristic-container {
-    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
-    border: 2px solid #00fff0;
-    border-radius: 15px;
-    padding: 30px;
-    max-width: 600px;
-    margin: 50px auto;
-    box-shadow: 0px 0px 20px #00fff0;
-    color: #ffffff;
-    font-family: 'Orbitron', sans-serif;
-  }
-  
-  .futuristic-title {
-    text-align: center;
-    color: #00fff0;
-    font-size: 2rem;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-  }
-  
-  .futuristic-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .futuristic-input-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #00e6e6;
-  }
-  
-  .futuristic-input, .futuristic-textarea, .futuristic-file-input {
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #00fff0;
-    color: #ffffff;
-    padding: 10px;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  
-  .futuristic-input:focus, .futuristic-textarea:focus, .futuristic-file-input:focus {
-    border-color: #ff00ff;
-  }
-  
-  .futuristic-textarea {
-    min-height: 80px;
-    resize: vertical;
-  }
-  
-  .futuristic-button {
-    background: #00fff0;
-    border: none;
-    color: #0d0d0d;
-    font-size: 1.2rem;
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  
-  .futuristic-button:hover {
-    background: #ff00ff;
-    transform: scale(1.05);
-  }
-  
-  .futuristic-status {
-    text-align: center;
-    color: #00ff99;
-    font-weight: bold;
-    margin-top: 20px;
-  }
-  
-  @media (max-width: 600px) {
-    .futuristic-container {
+  background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+  border: 2px solid #00fff0;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 600px;
+  margin: 50px auto;
+  box-shadow: 0px 0px 20px #00fff0;
+  color: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.futuristic-title {
+  text-align: center;
+  color: #00fff0;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.futuristic-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.futuristic-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #00e6e6;
+}
+
+.futuristic-input, .futuristic-textarea, .futuristic-file-input {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #00fff0;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.futuristic-input:focus, .futuristic-textarea:focus, .futuristic-file-input:focus {
+  border-color: #ff00ff;
+}
+
+.futuristic-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.futuristic-button {
+  background: #00fff0;
+  border: none;
+  color: #0d0d0d;
+  font-size: 1.2rem;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.futuristic-button:hover {
+  background: #ff00ff;
+  transform: scale(1.05);
+}
+
+.futuristic-status {
+  text-align: center;
+  color: #00ff99;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .futuristic-container {
       padding: 20px;
-    }
-  
-    .futuristic-title {
-      font-size: 1.5rem;
-    }
-  
-    .futuristic-button {
-      font-size: 1rem;
-      padding: 10px;
-    }
   }
 
-  .confirmation-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+  .futuristic-title {
+      font-size: 1.5rem;
   }
-  
-  .confirmation-dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    color: #000000;
+
+  .futuristic-button {
+      font-size: 1rem;
+      padding: 10px;
   }
-  
-  .confirmation-dialog button {
-    margin: 10px;
-  }
-  
-  
+}
+
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  color: #000000;
+}
+
+.confirmation-dialog button {
+  margin: 10px;
+}
+
+.metadata-entries-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.metadata-entry {
+  flex: 0 0 300px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.file-preview {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.confirmation-entry {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.add-entry-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.remove-entry-button {
+  background-color: #f44336;
+  color: white;
+  font-size: 0.8em;
+  padding: 5px 10px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.metadata-entries-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.metadata-entry {
+  flex: 0 0 300px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.metadata-entry.has-errors {
+  border-color: #ff4444;
+  background-color: #fff0f0;
+}
+
+.futuristic-input-group.error input,
+.futuristic-input-group.error textarea {
+  border-color: #ff4444;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.8em;
+  margin-top: 5px;
+  display: block;
+}
+
+.scrollable-dialog {
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.confirmation-content {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-top: 1px solid #eee;
+}
+
+.confirmation-entry {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+}
