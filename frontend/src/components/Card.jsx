@@ -1,5 +1,5 @@
 import React from "react";
-
+import { IoIosWarning } from "react-icons/io";
 export default function Card({
     name,
     competition_name,
@@ -10,9 +10,11 @@ export default function Card({
     issuer_address,
     official_web,
     organizer,
+    warning,
 }) {
     return (
-        <div className="max-w-xs w-64 h-96 rounded-lg overflow-hidden shadow-lg bg-white">
+        <div className="relative max-w-xs w-64 h-96 rounded-lg overflow-hidden shadow-lg bg-white">
+            {warning? <div className="absolute left-3 top-3 p-1 bg-black rounded-lg"><IoIosWarning className="text-yellow-400 text-2xl"/></div>:<></>}
             <img
                 className="w-full h-2/5  object-cover"
                 src={image}

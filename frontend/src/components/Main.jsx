@@ -111,6 +111,7 @@ const Main = () => {
           issuer_address={nft.metadata.issuer_address}
           official_web={nft.metadata.official_web}
           organizer={nft.metadata.organizer}
+          warning={nft.owner !== nft.metadata.issuer_address}
           ></Card>
         ))
       ) : (
