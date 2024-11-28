@@ -55,7 +55,7 @@ const Main = () => {
   }, []);
 
   return (
-    <div className="homepage flex-col items-center w-full">
+    <div className="homepage flex-col items-center w-full py-8">
       <div className='w-80 text-3xl my-4'>Verified Token Page</div>
       <div className='w-screen flex items-center justify-center gap-8 mt-0 my-12'>
         <div className="w-1/4">
