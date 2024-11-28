@@ -6,7 +6,8 @@ import Card from './Card';
 
 const Main = () => {
   const [nftData, setNftData] = useState([]);
-  const [filter, setFilter] = useState(''); // 過濾條件
+  const [ownerFilter, setOwnerFilter] = useState('');
+  const [senderFilter, setSenderFilter] = useState('');
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
   const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
   const contractABI = abi
@@ -40,20 +41,33 @@ const Main = () => {
   return (
     <div className="homepage flex-col items-center w-full">
       <div className='w-80 text-3xl my-4'>Verified Token Page</div>
-      <div className="w-80 mt-0 my-12">
-        {/* <label htmlFor="filter" className="mr-2">Filter by Owner:</label> */}
-        <input
-          type="text"
-          id="filter"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="input-underline"
-          placeholder="Ower address"
-        />
+      <div className='w-screen flex justify-center gap-8 mt-0 my-12'>
+        <div className="w-1/4">
+          <input
+            type="text"
+            id="owner filter"
+            value={ownerFilter}
+            onChange={(e) => setOwnerFilter(e.target.value)}
+            className="input-underline"
+            placeholder="Ower address"
+          />
+        </div>
+        <div className="w-1/4">
+          <input
+            type="text"
+            id="sender filter"
+            value={senderFilter}
+            onChange={(e) => setSenderFilter(e.target.value)}
+            className="input-underline"
+            placeholder="Sender address"
+          />
+        </div>
       </div>
       <div className="grid grid-cols-4 gap-8">
       {nftData.length > 0 ? (
-        nftData.filter((nft) => nft.owner.toLowerCase().includes(filter.toLowerCase()))
+        nftData
+        .filter((nft) => nft.owner.toLowerCase().includes(ownerFilter.toLowerCase()))
+        .filter((nft) => nft.sender.toLowerCase().includes(senderFilter.toLowerCase()))
         .map((nft) => (
           <Card
           name={"name"}
