@@ -15,32 +15,35 @@ function NFTUploadForm() {
   const [issuerAddress, setIssuerAddress] = useState('');
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState('');
+  const [showDialog, setShowDialog] = useState(false);  // State for controlling the dialog visibility
+  const [missingFields, setMissingFields] = useState([]); // To track missing fields
+  
   const REACT_APP_PINATA_API_KEY = process.env.REACT_APP_PINATA_API_KEY
   const REACT_APP_PINATA_SECRET_API_KEY = process.env.REACT_APP_PINATA_SECRET_API_KEY
 
-  const privateKey = process.env.REACT_APP_PRIVATE_KEY ; 
-  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
-  const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
-  const signer = new ethers.Wallet(privateKey, provider);
-  const contractABI = abi;
-  
-  const contract = new ethers.Contract(contractAddress, contractABI, signer);
-  
-  async function mintNFT(to, uri) {
-    try {
-        const mintingFee = await contract.mintingFee();
-        const tx = await contract.safeMint(to, uri, {
-            value: mintingFee,
-        });
-        await tx.wait();
-        console.log("Minting successful!");
-    } catch (error) {
-        console.error("Minting failed:", error);
+  // Handle confirmation dialog
+  const handleDialogClose = (confirm) => {
+    setShowDialog(false); // Close the dialog
+    if (confirm) {
+      handleSubmit();  // Proceed with the upload if confirmed
     }
-}
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const checkMissingFields = () => {
+    const missing = [];
+    if (!name) missing.push('Name');
+    if (!description) missing.push('Description');
+    if (!competitionName) missing.push('Competition Name');
+    if (!organizer) missing.push('Organizer');
+    if (!officialWeb) missing.push('Official Web');
+    if (!award) missing.push('Award');
+    if (!honoree) missing.push('Honoree');
+    if (!issuerAddress) missing.push('Issuer Address');
+    if (!file) missing.push('Image');
+    return missing;
+  };
+
+  const handleSubmit = async () => {
     if (!file) {
       setUploadStatus('Please select a file to upload.');
       return;
@@ -52,9 +55,6 @@ function NFTUploadForm() {
     formData.append('file', file);
 
     try {
-      console.log('API Key:', `${REACT_APP_PINATA_API_KEY}`);
-      console.log('Secret Key:', `${REACT_APP_PINATA_SECRET_API_KEY}`);
-
       // Upload image to Pinata
       const imageResponse = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
         headers: {
@@ -90,17 +90,29 @@ function NFTUploadForm() {
 
       const metadataUrl = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`;
       setUploadStatus(<a href={metadataUrl} target="_blank" rel="noopener noreferrer">Metadata URL: {metadataUrl}</a>);
-      await mintNFT(issuerAddress, metadataUrl)
-      // setUploadStatus(`Metadata URL: https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`);
+      
     } catch (error) {
       setUploadStatus('Failed to upload. Please try again.');
+    }
+  };
+
+  const handleUpload = (e) => {
+    e.preventDefault();
+    
+    const missing = checkMissingFields();
+    setMissingFields(missing);
+    
+    if (missing.length === 0) {
+      setShowDialog(true);  // Show the confirmation dialog if all fields are filled
+    } else {
+      setShowDialog(false);  // Hide dialog if fields are missing
     }
   };
 
   return (
     <div className="nft-upload-form futuristic-container">
       <h2 className="futuristic-title">Upload NFT Metadata</h2>
-      <form onSubmit={handleSubmit} className="futuristic-form">
+      <form onSubmit={handleUpload} className="futuristic-form">
         <div className="futuristic-input-group">
           <label>Name:</label>
           <input
@@ -189,17 +201,52 @@ function NFTUploadForm() {
             className="futuristic-file-input"
           />
         </div>
-        <button type="submit" className="futuristic-button">Upload to IPFS</button>
+        <button type="submit" className="futuristic-button">Show Confirmation</button>
       </form>
+
       {uploadStatus && <p className="futuristic-status">{uploadStatus}</p>}
+
+      {/* Confirmation Dialog */}
+      {showDialog && (
+        <div className="confirmation-overlay">
+          <div className="confirmation-dialog">
+            <h3>Are you sure you want to upload the metadata?</h3>
+
+            {/* Show missing fields */}
+            {missingFields.length > 0 ? (
+              <div>
+                <p>The following fields are missing:</p>
+                <ul>
+                  {missingFields.map((field, index) => (
+                    <li key={index}>{field}</li>
+                  ))}
+                </ul>
+                <button disabled className="futuristic-button">Upload Disabled</button>
+              </div>
+            ) : (
+              <div>
+                <p>Here is the data that will be uploaded:</p>
+                <ul>
+                  <li>Name: {name}</li>
+                  <li>Description: {description}</li>
+                  <li>Competition Name: {competitionName}</li>
+                  <li>Organizer: {organizer}</li>
+                  <li>Official Web: {officialWeb}</li>
+                  <li>Award: {award}</li>
+                  <li>Honoree: {honoree}</li>
+                  <li>Issuer Address: {issuerAddress}</li>
+                  <li>Image: <img src={file ? URL.createObjectURL(file) : ''} alt="Preview" width="100" /></li>
+                </ul>
+                <button onClick={() => handleDialogClose(true)} className="futuristic-button">Yes, Upload</button>
+              </div>
+            )}
+
+            <button onClick={() => handleDialogClose(false)} className="futuristic-button">Cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default NFTUploadForm;
-
-// Note: Remove `dotenv` import and usage from the frontend.
-// Instead, create a `.env` file in the project root with the following content:
-// REACT_APP_PINATA_API_KEY=your_api_key_here
-// REACT_APP_PINATA_SECRET_API_KEY=your_secret_key_here
-// Environment variables in React need to start with `REACT_APP_` to be accessible.
