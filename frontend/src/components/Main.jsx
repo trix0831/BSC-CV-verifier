@@ -6,6 +6,8 @@ import Card from './Card';
 
 const Main = () => {
   const [nftData, setNftData] = useState([]);
+  const [ownerFilter, setOwnerFilter] = useState('');
+  const [senderFilter, setSenderFilter] = useState('');
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
   const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
   const contractABI = abi
@@ -20,8 +22,9 @@ const Main = () => {
           for (let tokenId = 0; tokenId < tokenCount; tokenId++) {
               const uri = await contract.tokenURI(tokenId);
               const sender = await contract.tokenSender(tokenId);
+              const owner = await contract.ownerOf(tokenId)
               const metadata = await (await fetch("https://gateway.pinata.cloud/ipfs/QmUg1cvS11CUgc2CfLCMam8ZdQ5dHTmyGxbNEteSC1LWMT")).json()
-              tokens.push({ tokenId: tokenId.toString(), metadata, sender });
+              tokens.push({ tokenId: tokenId.toString(), metadata, sender, owner });
           }
           
         console.log("Token details:", tokens);
@@ -37,10 +40,35 @@ const Main = () => {
 
   return (
     <div className="homepage flex-col items-center w-full">
-      <div className='text-3xl my-4'>Verified Token Page</div>
+      <div className='w-80 text-3xl my-4'>Verified Token Page</div>
+      <div className='w-screen flex justify-center gap-8 mt-0 my-12'>
+        <div className="w-1/4">
+          <input
+            type="text"
+            id="owner filter"
+            value={ownerFilter}
+            onChange={(e) => setOwnerFilter(e.target.value)}
+            className="input-underline"
+            placeholder="Ower address"
+          />
+        </div>
+        <div className="w-1/4">
+          <input
+            type="text"
+            id="sender filter"
+            value={senderFilter}
+            onChange={(e) => setSenderFilter(e.target.value)}
+            className="input-underline"
+            placeholder="Sender address"
+          />
+        </div>
+      </div>
       <div className="grid grid-cols-4 gap-8">
       {nftData.length > 0 ? (
-        nftData.map((nft) => (
+        nftData
+        .filter((nft) => nft.owner.toLowerCase().includes(ownerFilter.toLowerCase()))
+        .filter((nft) => nft.sender.toLowerCase().includes(senderFilter.toLowerCase()))
+        .map((nft) => (
           <Card
           name={"name"}
           competition_name={nft.metadata.competition_name}
