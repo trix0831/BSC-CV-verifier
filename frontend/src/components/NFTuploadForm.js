@@ -3,6 +3,8 @@ import axios from 'axios';
 import './css/NFTUploadForm.css';
 import { ethers } from "ethers";
 import { abi } from './abi';
+import { useSDK } from "@metamask/sdk-react";
+import { BrowserProvider } from 'ethers';
 
 function NFTUploadForm() {
   const [metadataEntries, setMetadataEntries] = useState([{
@@ -22,6 +24,41 @@ function NFTUploadForm() {
 
   const REACT_APP_PINATA_API_KEY = process.env.REACT_APP_PINATA_API_KEY
   const REACT_APP_PINATA_SECRET_API_KEY = process.env.REACT_APP_PINATA_SECRET_API_KEY
+  const [account, setAccount] = useState();
+  const { sdk, connected, connecting, provider, chainId } = useSDK();
+
+  const privateKey = process.env.REACT_APP_PRIVATE_KEY ; 
+  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+  // const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
+  // const signer = new ethers.Wallet(privateKey, provider);
+
+  const contractABI = abi;
+  
+ 
+  
+  async function mintNFT(to, uri) {
+    try {
+      const ethersProvider = new BrowserProvider(window.ethereum); // 替代 Web3Provider
+      const signer = await ethersProvider.getSigner(); // 获取当前钱包签名者
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        const mintingFee = await contract.mintingFee();
+        const tx = await contract.safeMint(to, uri, {
+            value: mintingFee,
+        });
+        await tx.wait();
+        console.log("Minting successful!");
+    } catch (error) {
+        console.error("Minting failed:", error);
+    }
+}
+  const connect = async () => {
+    try {
+      const accounts = await sdk?.connect();
+      setAccount(accounts?.[0]);
+    } catch (err) {
+      console.warn("failed to connect..", err);
+    }
+  };
 
   // Handle confirmation dialog
   const handleDialogClose = (confirm) => {
@@ -90,7 +127,6 @@ function NFTUploadForm() {
 
     setMetadataEntries(updatedEntries);
 
-    // Check if any errors exist
     return !updatedEntries.some(entry => Object.keys(entry.errors).length > 0);
   };
 
@@ -133,8 +169,9 @@ function NFTUploadForm() {
             'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
           }
         });
-
-        return `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`;
+        const uri = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`
+        mintNFT(entry.honoree, uri)
+        return uri;
       } catch (error) {
         return `Upload failed for ${entry.name}`;
       }
@@ -142,6 +179,8 @@ function NFTUploadForm() {
 
     try {
       const results = await Promise.all(uploadPromises);
+      console.log(results)
+      // mintNFT(,results[0][0])
       setUploadStatus(
         <div>
           <p>Upload Results:</p>
@@ -170,6 +209,18 @@ function NFTUploadForm() {
   return (
     <div className="nft-upload-form futuristic-container">
       <h2 className="futuristic-title">Upload NFT Metadata</h2>
+      <button onClick={connect}>
+        Connect
+      </button>
+      {connected? (
+        <div>
+          <>
+            {`Connected chain: ${chainId}`}
+            <p></p>
+            {`Connected account: ${account}`}
+          </>
+        </div>
+      ):<></>}
       <div className="metadata-entries-container">
         {metadataEntries.map((entry, index) => (
           <div key={index} className={`metadata-entry ${Object.keys(entry.errors).length > 0 ? 'has-errors' : ''}`}>
