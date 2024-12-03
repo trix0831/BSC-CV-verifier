@@ -39,7 +39,8 @@ const Main = () => {
               const uri = await contract.tokenURI(tokenId);
               const sender = await contract.tokenSender(tokenId);
               const owner = await contract.ownerOf(tokenId)
-              const metadata = await (await fetch("https://gateway.pinata.cloud/ipfs/QmUg1cvS11CUgc2CfLCMam8ZdQ5dHTmyGxbNEteSC1LWMT")).json()
+              const metadata = await (await fetch(uri)).json()
+              // const metadata = await (await fetch("https://gateway.pinata.cloud/ipfs/QmUg1cvS11CUgc2CfLCMam8ZdQ5dHTmyGxbNEteSC1LWMT")).json()
               tokens.push({ tokenId: tokenId.toString(), metadata, sender, owner });
           }
           
@@ -107,7 +108,7 @@ const Main = () => {
           award={nft.metadata.award}
           description={nft.metadata.description}
           honoree={nft.metadata.honoree}
-          image="https://gateway.pinata.cloud/ipfs/Qmf8KyRhcFhCi6PeyGRUyNoZG9HfhGwKkat5NkmQdreyzL"
+          image={nft.metadata.image}
           issuer_address={nft.metadata.issuer_address}
           official_web={nft.metadata.official_web}
           organizer={nft.metadata.organizer}
