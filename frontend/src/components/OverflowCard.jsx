@@ -7,9 +7,19 @@ import Divider from '@mui/joy/Divider';
 import Typography from '@mui/joy/Typography';
 import { IoMdLink } from "react-icons/io";
 import Tooltip from "@mui/joy/Tooltip";
-import IconButton from "@mui/joy/IconButton";
+import IconButton from '@mui/material/IconButton';
 import { BsCopy } from "react-icons/bs";
-import Button from "@mui/joy/Button";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function OverflowCard({
     name,
@@ -22,11 +32,19 @@ export default function OverflowCard({
     official_web,
     organizer,
     warning,
+    owner,
 }) {
   const [page, setPage] = useState(true);
-  const [tooltipText, setTooltipText] = useState("Copy to clipboard");
+  const [open, setOpen] = React.useState(false);
 
-  // 截断地址
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const truncateAddress = (addr) => {
     if (!addr) return "";
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -43,12 +61,8 @@ export default function OverflowCard({
     }
   };
 
-  const openDes = (event) => {
-    event.stopPropagation(); 
-    
-  };
-
   return (
+    <>
     <Card variant="outlined" sx={{ width: 240, paddingBottom:0 }} onClick={()=>setPage(!page)}>
       <CardOverflow>
         <AspectRatio ratio="2">
@@ -60,64 +74,102 @@ export default function OverflowCard({
           />
         </AspectRatio>
       </CardOverflow>
-      {page?(<>
         <CardContent>
         <Typography level="title-md">{competition_name}</Typography>
         <Typography level="body-sm">{award}</Typography>
       </CardContent>
       <CardOverflow variant="soft" sx={{ bgcolor: 'background.level1' }}>
         <Divider inset="context" />
-        <CardContent orientation="horizontal" className='flex items-center'>
-          <Typography
-            level="body-xs"
-            textColor="text.secondary"
-            sx={{ fontWeight: 'md' }}
-          >
-            {organizer}
-          </Typography>
-          <Divider orientation="vertical" />
-          <Typography
-            level="body-xs"
-            textColor="text.secondary"
-            sx={{ fontWeight: 'md' }}
-          >
-            <a href={official_web} target="_blank" rel="noopener noreferrer" className='text-sky-700'>
-                <IoMdLink />
-            </a>
-          </Typography>
+        <CardContent orientation="horizontal" className='flex items-center text-xs'>
+            <button onClick={handleClickOpen} className='text-[12px] text-sky-700'>Open Detail</button>
         </CardContent>
-      </CardOverflow></>) :(<>
-        <CardContent>
-            <div className='flex items-center gap-x-2'>
-                <Typography level="body-xs">honoree:  {truncateAddress(honoree)}</Typography>
-                    <IconButton
+      </CardOverflow>
+    </Card>
+    <Dialog
+          open={open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+      {/* 第一块：Competition Name */}
+      <DialogTitle className="text-center text-xl font-semibold">
+        {competition_name}
+      </DialogTitle>
+      <Divider />
+
+      {/* 第二块：左图右文字 */}
+      <DialogContent className="flex gap-4 py-4">
+        <img
+          src={image}
+          alt="Competition"
+          className="w-52 h-64 object-cover rounded-md"
+        />
+        <div className="flex flex-col justify-center w-64 items-center">
+            <div className="flex flex-col justify-center text-sm gap-4">
+            <div>Owned by: {truncateAddress(owner)}                     
+                <IconButton
+                    color="primary"
+                    onClick={(event)=>handleCopy(event, owner)}
+                    aria-label="Copy wallet address"
+                    // size='small'
+                    sx={{width:28, height:20, ml:1}}
+                    >
+                    <BsCopy/>
+                </IconButton>
+            </div>
+          <div>Honoree: {truncateAddress(honoree)}
+                <IconButton
                     color="primary"
                     onClick={(event)=>handleCopy(event, honoree)}
                     aria-label="Copy wallet address"
-                    size='sm'
+                    sx={{width:28, height:20, ml:1}}
                     >
-                        <BsCopy />
-                    </IconButton>
-            </div>
+                    <BsCopy/>
+                </IconButton>          
+          </div>
+          <div>Issuer: {truncateAddress(issuer_address)}
+            <IconButton
+                color="primary"
+                onClick={(event)=>handleCopy(event, issuer_address)}
+                aria-label="Copy wallet address"
+                sx={{width:28, height:20, ml:1}}
+                >
+                <BsCopy/>
+            </IconButton>
+          </div>
+          <div>Organizer: {organizer}</div>
+            <div>Award: {award}</div>
             <div className='flex items-center gap-x-2'>
-                <Typography level="body-xs">issuer:  {truncateAddress(issuer_address)}</Typography>
-                    <IconButton
-                    color="primary"
-                    onClick={(event)=>handleCopy(event, issuer_address)}
-                    aria-label="Copy wallet address"
-                    size='sm'
-                    >
-                        <BsCopy/>
-                    </IconButton>
+            Official Website:{" "}
+            <a
+                href={official_web}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+            >
+                <IoMdLink />    
+               </a>
             </div>
-            <CardOverflow variant="soft" sx={{ bgcolor: 'background.level1' }}>
-        <Divider inset="context" />
-        <CardContent orientation="horizontal" className='flex items-center text-xs'>
-            <button  onClick={openDes} className='text-[12px] text-sky-700'>Open description</button>
-        </CardContent>
-      </CardOverflow>
-        </CardContent>
-      </>)}
-    </Card>
+            </div>
+        </div>
+      </DialogContent>
+      <Divider />
+
+      {/* 第三块：滚动的描述文字 */}
+      <DialogContent className="max-h-80 min-h-40 overflow-y-auto">
+        <div>
+            Description:
+        </div>
+        <p className="text-sm">{description}</p>
+      </DialogContent>
+      <Divider />
+      <DialogContent className='flex justify-end py-0'>
+        <Button onClick={handleClose} className="text-blue-500">
+          Close
+        </Button>
+        </DialogContent>
+        </Dialog>         
+        </>
   );
 }

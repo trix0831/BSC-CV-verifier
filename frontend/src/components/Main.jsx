@@ -114,6 +114,7 @@ const Main = () => {
             official_web={nft.metadata.official_web}
             organizer={nft.metadata.organizer}
             warning={nft.owner !== nft.metadata.issuer_address}
+            owner={nft.owner}
           ></OverflowCard>
         ))
       ) : (
