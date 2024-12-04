@@ -102,10 +102,9 @@ html {
 
 .input-underline {
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 1px solid #ccc;
   outline: none;
-  padding: 5px 10px;
-  font-size: 16px;
+  padding: 0px 5px;
   transition: border-color 0.3s, box-shadow 0.3s;
   background: none;
   width: 100%;

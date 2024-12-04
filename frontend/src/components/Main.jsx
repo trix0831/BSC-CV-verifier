@@ -3,15 +3,31 @@ import './css/HomePage.css';
 import { ethers } from 'ethers';
 import { abi } from './abi';
 import Card from './Card';
+import { IoFilter } from "react-icons/io5";
+import MetadataFilter from './MetadataFilter';
 
 const Main = () => {
   const [nftData, setNftData] = useState([]);
   const [ownerFilter, setOwnerFilter] = useState('');
   const [senderFilter, setSenderFilter] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [metadataFilters, setMetadataFilters] = useState([]);
+
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
   const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
   const contractABI = abi
   const contract = new ethers.Contract(contractAddress, contractABI, provider);
+
+  const updateMetadataFilter = (index, key, value) => {
+    const updatedFilters = [...metadataFilters];
+    updatedFilters[index] = { key, value };
+    setMetadataFilters(updatedFilters);
+  };
+  useEffect(() => {
+    if(nftData.length > 0){
+      setMetadataFilters(Object.entries(nftData[0].metadata).map(([key, value]) => ({ key, value: "" })))
+    }
+  }, [nftData]);
 
   useEffect(() => {
     async function fetchAllNFTs() {
@@ -23,7 +39,8 @@ const Main = () => {
               const uri = await contract.tokenURI(tokenId);
               const sender = await contract.tokenSender(tokenId);
               const owner = await contract.ownerOf(tokenId)
-              const metadata = await (await fetch("https://gateway.pinata.cloud/ipfs/QmUg1cvS11CUgc2CfLCMam8ZdQ5dHTmyGxbNEteSC1LWMT")).json()
+              const metadata = await (await fetch(uri)).json()
+              // const metadata = await (await fetch("https://gateway.pinata.cloud/ipfs/QmUg1cvS11CUgc2CfLCMam8ZdQ5dHTmyGxbNEteSC1LWMT")).json()
               tokens.push({ tokenId: tokenId.toString(), metadata, sender, owner });
           }
           
@@ -39,9 +56,9 @@ const Main = () => {
   }, []);
 
   return (
-    <div className="homepage flex-col items-center w-full">
+    <div className="homepage flex-col items-center w-full py-8">
       <div className='w-80 text-3xl my-4'>Verified Token Page</div>
-      <div className='w-screen flex justify-center gap-8 mt-0 my-12'>
+      <div className='w-screen flex items-center justify-center gap-8 mt-0 my-12'>
         <div className="w-1/4">
           <input
             type="text"
@@ -62,12 +79,28 @@ const Main = () => {
             placeholder="Sender address"
           />
         </div>
+      <div className="w-12 flex justify-center my-4">
+        <button
+          className="text-white"
+        >
+          <IoFilter onClick={() => setShowFilters(!showFilters)}/>
+          {showFilters ? <MetadataFilter metadataFilters={metadataFilters} updateMetadataFilter={updateMetadataFilter}></MetadataFilter> : <></>}
+        </button>
+      </div>
       </div>
       <div className="grid grid-cols-4 gap-8">
       {nftData.length > 0 ? (
         nftData
         .filter((nft) => nft.owner.toLowerCase().includes(ownerFilter.toLowerCase()))
         .filter((nft) => nft.sender.toLowerCase().includes(senderFilter.toLowerCase()))
+        .filter((nft) =>
+          metadataFilters.every((filter) =>
+          nft.metadata[filter.key]
+          ?.toString()
+          .toLowerCase()
+          .includes(filter.value.toLowerCase())
+          )
+        )
         .map((nft) => (
           <Card
           name={"name"}
@@ -75,10 +108,11 @@ const Main = () => {
           award={nft.metadata.award}
           description={nft.metadata.description}
           honoree={nft.metadata.honoree}
-          image="https://gateway.pinata.cloud/ipfs/Qmf8KyRhcFhCi6PeyGRUyNoZG9HfhGwKkat5NkmQdreyzL"
+          image={nft.metadata.image}
           issuer_address={nft.metadata.issuer_address}
           official_web={nft.metadata.official_web}
           organizer={nft.metadata.organizer}
+          warning={nft.owner !== nft.metadata.issuer_address}
           ></Card>
         ))
       ) : (
