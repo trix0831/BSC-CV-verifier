@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './css/NFTUploadForm.css';
 import { ethers } from "ethers";
@@ -15,7 +15,6 @@ function NFTUploadForm() {
     officialWeb: '',
     award: '',
     honoree: '',
-    honoreeAddress: '',
     file: null,
     errors: {}
   }]);
@@ -32,17 +31,13 @@ function NFTUploadForm() {
 
   const privateKey = process.env.REACT_APP_PRIVATE_KEY ; 
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
-  // const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
-  // const signer = new ethers.Wallet(privateKey, provider);
 
   const contractABI = abi;
   
- 
-  
   async function mintNFT(to, uri) {
     try {
-      const ethersProvider = new BrowserProvider(window.ethereum); // 替代 Web3Provider
-      const signer = await ethersProvider.getSigner(); // 获取当前钱包签名者
+      const ethersProvider = new BrowserProvider(window.ethereum); // Replace Web3Provider
+      const signer = await ethersProvider.getSigner(); // Get current wallet signer
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
         const mintingFee = await contract.mintingFee();
         const tx = await contract.safeMint(to, uri, {
@@ -53,7 +48,8 @@ function NFTUploadForm() {
     } catch (error) {
         console.error("Minting failed:", error);
     }
-}
+  }
+
   const connect = async () => {
     try {
       const accounts = await sdk?.connect();
@@ -101,7 +97,6 @@ function NFTUploadForm() {
         officialWeb: '',
         award: '',
         honoree: '',
-        honoreeAddress: '',
         file: null,
         errors: {}
       };
@@ -147,7 +142,6 @@ function NFTUploadForm() {
         officialWeb: '',
         award: '',
         honoree: '',
-        honoreeAddress: '',
         file: null,
         errors: {}
       }]);
@@ -172,7 +166,6 @@ function NFTUploadForm() {
       if (!entry.officialWeb) errors.officialWeb = true;
       if (!entry.award) errors.award = true;
       if (!entry.honoree) errors.honoree = true;
-      if (!entry.honoreeAddress) errors.honoreeAddress = true;
       if (!entry.file) errors.file = true;
 
       return {
@@ -215,7 +208,7 @@ function NFTUploadForm() {
           award: entry.award,
           honoree: entry.honoree,
           image: imageUrl,
-          _address: entry.honoreeAddress
+          _address: account
         };
 
         // Upload metadata to Pinata
@@ -226,7 +219,7 @@ function NFTUploadForm() {
           }
         });
         const uri = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`
-        mintNFT(entry.honoree, uri)
+        mintNFT(account, uri)
         return uri;
       } catch (error) {
         return `Upload failed for ${entry.name}`;
@@ -236,7 +229,6 @@ function NFTUploadForm() {
     try {
       const results = await Promise.all(uploadPromises);
       console.log(results)
-      // mintNFT(,results[0][0])
       setUploadStatus(
         <div>
           <p>Upload Results:</p>
@@ -265,146 +257,146 @@ function NFTUploadForm() {
   return (
     <div className="nft-upload-form futuristic-container">
       <h2 className="futuristic-title">Upload NFT Metadata</h2>
-      <button onClick={connect}>
-        Connect
+      <button onClick={connect} className="futuristic-button">
+        Connect Wallet
       </button>
-      {connected? (
-        <div>
-          <>
-            {`Connected chain: ${chainId}`}
-            <p></p>
-            {`Connected account: ${account}`}
-          </>
+      {connected ? (
+        <div className="wallet-info">
+          <p>Connected chain: {chainId}</p>
+          <p>Connected account: {account}</p>
         </div>
-      ):<></>}
-      <div className="metadata-entries-container">
-        {metadataEntries.map((entry, index) => (
-          <div key={index} className={`metadata-entry ${Object.keys(entry.errors).length > 0 ? 'has-errors' : ''}`}>
-            <div className="entry-header">
-              <h3>Entry {index + 1}</h3>
-              {metadataEntries.length > 1 && (
-                <button 
-                  onClick={() => removeMetadataEntry(index)} 
-                  className="futuristic-button remove-entry-button"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.name ? 'error' : ''}`}>
-              <label>Name:</label>
-              <input
-                type="text"
-                value={entry.name}
-                onChange={(e) => updateMetadataEntry(index, 'name', e.target.value)}
-                required
-                className="futuristic-input"
-              />
-              {entry.errors.name && <span className="error-message">Name is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.description ? 'error' : ''}`}>
-              <label>Description:</label>
-              <textarea
-                value={entry.description}
-                onChange={(e) => updateMetadataEntry(index, 'description', e.target.value)}
-                required
-                className="futuristic-textarea"
-              />
-              {entry.errors.description && <span className="error-message">Description is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.competitionName ? 'error' : ''}`}>
-              <label>Competition Name:</label>
-              <input
-                type="text"
-                value={entry.competitionName}
-                onChange={(e) => updateMetadataEntry(index, 'competitionName', e.target.value)}
-                required
-                className="futuristic-input"
-              />
-              {entry.errors.competitionName && <span className="error-message">Competition Name is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.organizer ? 'error' : ''}`}>
-              <label>Organizer:</label>
-              <input
-                type="text"
-                value={entry.organizer}
-                onChange={(e) => updateMetadataEntry(index, 'organizer', e.target.value)}
-                required
-                className="futuristic-input"
-              />
-              {entry.errors.organizer && <span className="error-message">Organizer is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.officialWeb ? 'error' : ''}`}>
-              <label>Official Web:</label>
-              <input
-                type="text"
-                value={entry.officialWeb}
-                onChange={(e) => updateMetadataEntry(index, 'officialWeb', e.target.value)}
-                required
-                className="futuristic-input"
-              />
-              {entry.errors.officialWeb && <span className="error-message">Official Web is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.award ? 'error' : ''}`}>
-              <label>Award:</label>
-              <input
-                type="text"
-                value={entry.award}
-                onChange={(e) => updateMetadataEntry(index, 'award', e.target.value)}
-                required
-                className="futuristic-input"
-              />
-              {entry.errors.award && <span className="error-message">Award is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.honoree ? 'error' : ''}`}>
-              <label>Honoree:</label>
-              <input
-                type="text"
-                value={entry.honoree}
-                onChange={(e) => updateMetadataEntry(index, 'honoree', e.target.value)}
-                required
-                className="futuristic-input"
-              />
-              {entry.errors.honoree && <span className="error-message">Honoree is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.honoreeAddress ? 'error' : ''}`}>
-              <label>Honoree's Address:</label>
-              <input
-                type="text"
-                value={entry.honoreeAddress}
-                onChange={(e) => updateMetadataEntry(index, 'honoreeAddress', e.target.value)}
-                required
-                className="futuristic-input"
-              />
-              {entry.errors.honoreeAddress && <span className="error-message">Honoree Address is required</span>}
-            </div>
-            <div className={`futuristic-input-group ${entry.errors.file ? 'error' : ''}`}>
-              <label>Upload Image:</label>
-              <input
-                type="file"
-                onChange={(e) => updateMetadataEntry(index, 'file', e.target.files[0])}
-                required
-                className="futuristic-file-input"
-              />
-              {entry.errors.file && <span className="error-message">Image is required</span>}
-              {entry.file && (
-                <img 
-                  src={URL.createObjectURL(entry.file)} 
-                  alt="Preview" 
-                  className="file-preview" 
-                  width="100" 
+      ) : (
+        <p>Please connect your wallet to continue.</p>
+      )}
+      {connected ? (
+        <div className="metadata-entries-container">
+          {metadataEntries.map((entry, index) => (
+            <div key={index} className={`metadata-entry ${Object.keys(entry.errors).length > 0 ? 'has-errors' : ''}`}>
+              <div className="entry-header">
+                <h3>Entry {index + 1}</h3>
+                {metadataEntries.length > 1 && (
+                  <button 
+                    onClick={() => removeMetadataEntry(index)} 
+                    className="futuristic-button remove-entry-button"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.name ? 'error' : ''}`}>
+                <label>Name:</label>
+                <input
+                  type="text"
+                  value={entry.name}
+                  onChange={(e) => updateMetadataEntry(index, 'name', e.target.value)}
+                  required
+                  className="futuristic-input"
                 />
-              )}
+                {entry.errors.name && <span className="error-message">Name is required</span>}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.description ? 'error' : ''}`}>
+                <label>Description:</label>
+                <textarea
+                  value={entry.description}
+                  onChange={(e) => updateMetadataEntry(index, 'description', e.target.value)}
+                  required
+                  className="futuristic-textarea"
+                />
+                {entry.errors.description && <span className="error-message">Description is required</span>}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.competitionName ? 'error' : ''}`}>
+                <label>Competition Name:</label>
+                <input
+                  type="text"
+                  value={entry.competitionName}
+                  onChange={(e) => updateMetadataEntry(index, 'competitionName', e.target.value)}
+                  required
+                  className="futuristic-input"
+                />
+                {entry.errors.competitionName && <span className="error-message">Competition Name is required</span>}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.organizer ? 'error' : ''}`}>
+                <label>Organizer:</label>
+                <input
+                  type="text"
+                  value={entry.organizer}
+                  onChange={(e) => updateMetadataEntry(index, 'organizer', e.target.value)}
+                  required
+                  className="futuristic-input"
+                />
+                {entry.errors.organizer && <span className="error-message">Organizer is required</span>}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.officialWeb ? 'error' : ''}`}>
+                <label>Official Web:</label>
+                <input
+                  type="text"
+                  value={entry.officialWeb}
+                  onChange={(e) => updateMetadataEntry(index, 'officialWeb', e.target.value)}
+                  required
+                  className="futuristic-input"
+                />
+                {entry.errors.officialWeb && <span className="error-message">Official Web is required</span>}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.award ? 'error' : ''}`}>
+                <label>Award:</label>
+                <input
+                  type="text"
+                  value={entry.award}
+                  onChange={(e) => updateMetadataEntry(index, 'award', e.target.value)}
+                  required
+                  className="futuristic-input"
+                />
+                {entry.errors.award && <span className="error-message">Award is required</span>}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.honoree ? 'error' : ''}`}>
+                <label>Honoree:</label>
+                <input
+                  type="text"
+                  value={entry.honoree}
+                  onChange={(e) => updateMetadataEntry(index, 'honoree', e.target.value)}
+                  required
+                  className="futuristic-input"
+                />
+                {entry.errors.honoree && <span className="error-message">Honoree is required</span>}
+              </div>
+              <div className={`futuristic-input-group`}>
+                <label>Honoree's Address:</label>
+                <input
+                  type="text"
+                  value={account}
+                  disabled
+                  className="futuristic-input"
+                />
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.file ? 'error' : ''}`}>
+                <label>Upload Image:</label>
+                <input
+                  type="file"
+                  onChange={(e) => updateMetadataEntry(index, 'file', e.target.files[0])}
+                  required
+                  className="futuristic-file-input"
+                />
+                {entry.errors.file && <span className="error-message">Image is required</span>}
+                {entry.file && (
+                  <img 
+                    src={URL.createObjectURL(entry.file)} 
+                    alt="Preview" 
+                    className="file-preview" 
+                    width="100" 
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : null}
       
       <div className="form-actions">
         <button 
           type="button" 
           onClick={addMetadataEntry} 
           className="futuristic-button add-entry-button"
+          disabled={!connected}
         >
           Add Another Entry
         </button>
@@ -412,6 +404,7 @@ function NFTUploadForm() {
           type="submit" 
           onClick={handleUpload} 
           className="futuristic-button submit-button"
+          disabled={!connected}
         >
           Show Confirmation
         </button>
@@ -436,7 +429,7 @@ function NFTUploadForm() {
                     <li>Official Web: {entry.officialWeb}</li>
                     <li>Award: {entry.award}</li>
                     <li>Honoree: {entry.honoree}</li>
-                    <li>Honoree Address: {entry.honoreeAddress}</li>
+                    <li>Honoree Address: {account}</li>
                     <li>Image: <img src={entry.file ? URL.createObjectURL(entry.file) : ''} alt="Preview" width="100" /></li>
                   </ul>
                 </div>
