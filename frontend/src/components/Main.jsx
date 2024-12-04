@@ -5,6 +5,7 @@ import { abi } from './abi';
 import Card from './Card';
 import { IoFilter } from "react-icons/io5";
 import MetadataFilter from './MetadataFilter';
+import OverflowCard from './OverflowCard';
 
 const Main = () => {
   const [nftData, setNftData] = useState([]);
@@ -102,18 +103,18 @@ const Main = () => {
           )
         )
         .map((nft) => (
-          <Card
-          name={"name"}
-          competition_name={nft.metadata.competition_name}
-          award={nft.metadata.award}
-          description={nft.metadata.description}
-          honoree={nft.metadata.honoree}
-          image={nft.metadata.image}
-          issuer_address={nft.metadata.issuer_address}
-          official_web={nft.metadata.official_web}
-          organizer={nft.metadata.organizer}
-          warning={nft.owner !== nft.metadata.issuer_address}
-          ></Card>
+          <OverflowCard
+            name={"name"}
+            competition_name={nft.metadata.competition_name}
+            award={nft.metadata.award}
+            description={nft.metadata.description}
+            honoree={nft.metadata.honoree}
+            image={nft.metadata.image}
+            issuer_address={nft.metadata.issuer_address}
+            official_web={nft.metadata.official_web}
+            organizer={nft.metadata.organizer}
+            warning={nft.owner !== nft.metadata.issuer_address}
+          ></OverflowCard>
         ))
       ) : (
         <p>No NFTs found</p>
