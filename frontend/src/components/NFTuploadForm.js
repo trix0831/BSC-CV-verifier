@@ -13,12 +13,15 @@ function NFTUploadForm() {
     officialWeb: '',
     award: '',
     honoree: '',
-    issuerAddress: '',
+    honoreeAddress: '',
     file: null,
     errors: {}
   }]);
   const [uploadStatus, setUploadStatus] = useState('');
   const [showDialog, setShowDialog] = useState(false);
+  const [showAutoFillDialog, setShowAutoFillDialog] = useState(false);
+  const [lastEntryIndex, setLastEntryIndex] = useState(0);
+  const [autoFillOptions, setAutoFillOptions] = useState({});
 
   const REACT_APP_PINATA_API_KEY = process.env.REACT_APP_PINATA_API_KEY
   const REACT_APP_PINATA_SECRET_API_KEY = process.env.REACT_APP_PINATA_SECRET_API_KEY
@@ -45,20 +48,73 @@ function NFTUploadForm() {
     setMetadataEntries(newEntries);
   };
 
+  // Handle auto-fill dialog
+  const handleAutoFillDialogClose = (confirm) => {
+    if (confirm) {
+      // Create new entry with selected auto-filled fields
+      const newEntry = { ...metadataEntries[lastEntryIndex] };
+      const fieldsToKeep = Object.keys(autoFillOptions).filter(field => autoFillOptions[field]);
+      
+      // Reset fields not selected for auto-fill
+      const newEntryTemplate = {
+        name: '',
+        description: '',
+        competitionName: '',
+        organizer: '',
+        officialWeb: '',
+        award: '',
+        honoree: '',
+        honoreeAddress: '',
+        file: null,
+        errors: {}
+      };
+
+      fieldsToKeep.forEach(field => {
+        newEntry[field] = metadataEntries[lastEntryIndex][field];
+      });
+
+      // Merge auto-filled fields with new entry template
+      const finalNewEntry = { ...newEntryTemplate, ...newEntry };
+      
+      setMetadataEntries([...metadataEntries, finalNewEntry]);
+    }
+    
+    setShowAutoFillDialog(false);
+    setAutoFillOptions({});
+  };
+
   // Add a new metadata entry
   const addMetadataEntry = () => {
-    setMetadataEntries([...metadataEntries, {
-      name: '',
-      description: '',
-      competitionName: '',
-      organizer: '',
-      officialWeb: '',
-      award: '',
-      honoree: '',
-      issuerAddress: '',
-      file: null,
-      errors: {}
-    }]);
+    // If there's more than one entry, show auto-fill dialog
+    if (metadataEntries.length > 0) {
+      const prevEntry = metadataEntries[metadataEntries.length - 1];
+      setLastEntryIndex(metadataEntries.length - 1);
+      
+      // Prepare auto-fill options
+      const initialOptions = {
+        competitionName: !!prevEntry.competitionName,
+        organizer: !!prevEntry.organizer,
+        officialWeb: !!prevEntry.officialWeb,
+        award: !!prevEntry.award
+      };
+      
+      setAutoFillOptions(initialOptions);
+      setShowAutoFillDialog(true);
+    } else {
+      // If it's the first entry, just add a new blank entry
+      setMetadataEntries([...metadataEntries, {
+        name: '',
+        description: '',
+        competitionName: '',
+        organizer: '',
+        officialWeb: '',
+        award: '',
+        honoree: '',
+        honoreeAddress: '',
+        file: null,
+        errors: {}
+      }]);
+    }
   };
 
   // Remove a metadata entry
@@ -79,7 +135,7 @@ function NFTUploadForm() {
       if (!entry.officialWeb) errors.officialWeb = true;
       if (!entry.award) errors.award = true;
       if (!entry.honoree) errors.honoree = true;
-      if (!entry.issuerAddress) errors.issuerAddress = true;
+      if (!entry.honoreeAddress) errors.honoreeAddress = true;
       if (!entry.file) errors.file = true;
 
       return {
@@ -123,7 +179,7 @@ function NFTUploadForm() {
           award: entry.award,
           honoree: entry.honoree,
           image: imageUrl,
-          issuer_address: entry.issuerAddress
+          _address: entry.honoreeAddress
         };
 
         // Upload metadata to Pinata
@@ -184,7 +240,6 @@ function NFTUploadForm() {
                 </button>
               )}
             </div>
-            {/* Restore all previous input fields with error handling */}
             <div className={`futuristic-input-group ${entry.errors.name ? 'error' : ''}`}>
               <label>Name:</label>
               <input
@@ -261,16 +316,16 @@ function NFTUploadForm() {
               />
               {entry.errors.honoree && <span className="error-message">Honoree is required</span>}
             </div>
-            <div className={`futuristic-input-group ${entry.errors.issuerAddress ? 'error' : ''}`}>
-              <label>Issuer's Address:</label>
+            <div className={`futuristic-input-group ${entry.errors.honoreeAddress ? 'error' : ''}`}>
+              <label>Honoree's Address:</label>
               <input
                 type="text"
-                value={entry.issuerAddress}
-                onChange={(e) => updateMetadataEntry(index, 'issuerAddress', e.target.value)}
+                value={entry.honoreeAddress}
+                onChange={(e) => updateMetadataEntry(index, 'honoreeAddress', e.target.value)}
                 required
                 className="futuristic-input"
               />
-              {entry.errors.issuerAddress && <span className="error-message">Issuer Address is required</span>}
+              {entry.errors.honoreeAddress && <span className="error-message">Honoree Address is required</span>}
             </div>
             <div className={`futuristic-input-group ${entry.errors.file ? 'error' : ''}`}>
               <label>Upload Image:</label>
@@ -330,7 +385,7 @@ function NFTUploadForm() {
                     <li>Official Web: {entry.officialWeb}</li>
                     <li>Award: {entry.award}</li>
                     <li>Honoree: {entry.honoree}</li>
-                    <li>Issuer Address: {entry.issuerAddress}</li>
+                    <li>Honoree Address: {entry.honoreeAddress}</li>
                     <li>Image: <img src={entry.file ? URL.createObjectURL(entry.file) : ''} alt="Preview" width="100" /></li>
                   </ul>
                 </div>
@@ -339,6 +394,50 @@ function NFTUploadForm() {
             <div className="dialog-actions">
               <button onClick={() => handleDialogClose(true)} className="futuristic-button">Yes, Upload</button>
               <button onClick={() => handleDialogClose(false)} className="futuristic-button">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Auto-fill Confirmation Dialog */}
+      {showAutoFillDialog && (
+        <div className="confirmation-overlay">
+          <div className="confirmation-dialog">
+            <h3>Auto-fill Options</h3>
+            <p>Select which fields you want to keep from the previous entry:</p>
+            <div className="autofill-options">
+              {Object.keys(autoFillOptions).map(field => (
+                <div key={field} className="autofill-option">
+                  <input
+                    type="checkbox"
+                    id={field}
+                    checked={autoFillOptions[field]}
+                    onChange={(e) => setAutoFillOptions({
+                      ...autoFillOptions,
+                      [field]: e.target.checked
+                    })}
+                  />
+                  <label htmlFor={field}>
+                    {field.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ 
+                      return str.toUpperCase(); 
+                    })}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="dialog-actions">
+              <button 
+                onClick={() => handleAutoFillDialogClose(true)} 
+                className="futuristic-button"
+              >
+                Apply Auto-fill
+              </button>
+              <button 
+                onClick={() => handleAutoFillDialogClose(false)} 
+                className="futuristic-button"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
