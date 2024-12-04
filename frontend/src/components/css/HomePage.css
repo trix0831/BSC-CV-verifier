@@ -3,10 +3,10 @@ body,
 html {
   margin: 0;
   padding: 0;
-  background: linear-gradient(-45deg, #1f1c2c, #928dab, #1f1c2c, #3f0d12);
+  background: #15181b;
+  /* background: linear-gradient(-45deg, #1f1c2c, #928dab, #1f1c2c, #3f0d12); */
   background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
-  color: #e7dfdd;
+  /* animation: gradientAnimation 15s ease infinite; */
   font-family: 'Montserrat', sans-serif;
   overflow-x: hidden; /* Prevent horizontal scroll */
 }
@@ -72,11 +72,12 @@ html {
   width: 90%;
   padding: 2rem;
   backdrop-filter: blur(5px);
-  background-color: rgba(14, 11, 22, 0.6);
+  background-color: rgba(53, 52, 56, 0.6);
   border-radius: 10px;
   color: #e7dfdd;
   margin: 2rem auto; /* Center and add spacing */
   z-index: 1; /* Ensure it stays above the background */
+  border: 2px solid #6EACDA; /* Light blue border */
 }
 
 /* NFT Display Styles */
@@ -96,7 +97,7 @@ html {
 .footer {
   text-align: center;
   padding: 1rem;
-  background-color: rgba(31, 28, 44, 0.8);
+  background-color: rgba(53, 52, 56, 0.6);
   color: #c9c9c9;
 }
 

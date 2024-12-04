@@ -104,7 +104,7 @@ const Compare = () => {
         width: '100%',
       }}
     >
-      <div style={{ fontSize: '1.875rem', margin: '1rem 0' }}>
+      <div style={{ fontSize: '1.875rem', margin: '1rem 0', color: '#c9c9c9'}}>
         Compare NFTs by Owner
       </div>
 
@@ -124,9 +124,23 @@ const Compare = () => {
             className="input-underline w-1/3"
             placeholder="Enter address to compare"
           />
-          <button onClick={handleAddAddress} className="btn-primary">
+          <button
+            onClick={handleAddAddress}
+            style={{
+              border: '1.5px solid #6EACDA', // Light blue border
+              backgroundColor: '#222126 hover:#39383f',      // Gray background
+              color: '#c9c9c9',             // Text color
+              padding: '10px 20px',         // Optional: Add some padding
+              cursor: 'pointer',            // Optional: Change cursor to pointer
+              transition: 'background-color 0.3s ease', // Smooth hover effect
+              borderRadius: '0.5rem',       // Optional: Add some border radius
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#222126'} // Change background on hover
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#39383f'}    // Reset background on hover out
+          >
             Add Address
           </button>
+
         </div>
       </div>
 
@@ -141,7 +155,7 @@ const Compare = () => {
           style={{
             width: '33%',
             padding: '1rem',
-            borderRight: '1px solid #ddd',
+            borderRight: '1px solid #6EACDA',
             overflowY: 'auto',
             height: '100%',
             scrollbarWidth: 'thin',
@@ -161,8 +175,9 @@ const Compare = () => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   backgroundColor:
-                    selectedCandidate === item.address ? '#bfdbfe' : '#f5f5f5',
+                    selectedCandidate === item.address ? '#222126' : '#39383f',
                   transition: 'background-color 0.3s ease',
+                  border: '1.5px solid #6EACDA', // Added light blue border
                 }}
                 onClick={() => handleSelectCandidate(item.address)}
               >
@@ -173,7 +188,7 @@ const Compare = () => {
                       handleNicknameChange(index, nickname)
                     }
                   />
-                  <span style={{ fontSize: '0.875rem', color: '#4a5568' }}>
+                  <span style={{ fontSize: '0.875rem', color: '#e7dfdd' }}>
                     {item.address}
                   </span>
                 </div>
@@ -184,17 +199,19 @@ const Compare = () => {
                   }}
                   style={{
                     color: '#f56565',
-                    border: 'none',
                     background: 'none',
                     cursor: 'pointer',
+                    marginLeft: '-1rem', // Adjusted margin
+                    marginBottom: '1rem', // Adjusted margin
+                    padding: '0.25rem', // Added padding
                   }}
                 >
-                  <FaTimes />
+                  <FaTimes/>
                 </button>
               </div>
             ))
           ) : (
-            <p>No addresses selected.</p>
+            <p style={{color: '#c9c9c9'}}>No addresses selected.</p>
           )}
         </div>
 
@@ -279,7 +296,7 @@ const NicknameInput = ({ nickname, onNicknameChange }) => {
           handleBlur();
         }
       }}
-      style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: 'purple' }}
+      style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#6EACDA' }}
     />
   ) : (
     <div
@@ -287,7 +304,7 @@ const NicknameInput = ({ nickname, onNicknameChange }) => {
         e.stopPropagation(); // Prevent triggering the select handler
         setIsEditing(true);
       }}
-      style={{ fontWeight: 'bold', marginBottom: '0.5rem', cursor: 'pointer', color: 'purple' }}
+      style={{ fontWeight: 'bold', marginBottom: '0.5rem', cursor: 'pointer', color: '#6EACDA' }}
     >
       {nickname || 'Click to add nickname'}
     </div>
