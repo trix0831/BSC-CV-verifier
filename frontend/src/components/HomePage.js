@@ -1,75 +1,49 @@
-import React, { useEffect, useState } from 'react';
 import './css/HomePage.css';
-import { ethers } from 'ethers';
-import { abi } from './abi';
+import { useNavigate } from 'react-router-dom';
+import UploadCV from './svgs/UploadCV';
 
 function HomePage() {
-  const [nftData, setNftData] = useState(null);
-  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
-  const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
-  const contractABI = abi;
-  const tokenId = 0;
+  const navigate = useNavigate(); // Hook for navigation
 
-  useEffect(() => {
-    const fetchNFTData = async () => {
-      try {
-        const contract = new ethers.Contract(contractAddress, contractABI, provider);
-
-        // Call contract functions, e.g., tokenURI and ownerOf
-        const tokenURI = await contract.tokenURI(tokenId);
-        const owner = await contract.ownerOf(tokenId);
-
-        console.log(`Token ID ${tokenId} tokenURI:`, tokenURI);
-        console.log(`Token ID ${tokenId} owner:`, owner);
-
-        // Fetch and display metadata from tokenURI
-        const url = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
-        const metadataResponse = await fetch(url);
-        const metadata = await metadataResponse.json();
-        console.log('NFT metadata:', metadata);
-
-        // Update state with NFT data
-        setNftData({
-          tokenId: tokenId,
-          owner: owner,
-          ...metadata,
-        });
-      } catch (error) {
-        console.error('Error fetching NFT data:', error);
-      }
-    };
-    fetchNFTData();
-  }, []);
+  const handleCardClick = () => {
+    navigate('/upload'); // Navigate to /upload
+  };
 
   return (
     <div className="homepage">
       <header className="header">
         <h1 className="title">CV Verifier</h1>
-        <p className="subtitle">Experience the Future of Decentralization. Be your own verifier.</p>
+        <p className="subtitle">Experience the Future of Decentralization.</p>
       </header>
-      <main className="main-content">
-        <section className="info-section">
-          {nftData ? (
-            <div className="nft-display">
-              <h2>
-                NFT #{nftData.tokenId}: {nftData.name}
-              </h2>
-              <img
-                src={nftData.image.replace('ipfs://', 'https://ipfs.io/ipfs/')}
-                alt={nftData.name}
-                className="nft-image"
-              />
-              <p>{nftData.description}</p>
-              <p>
-                <strong>Owner:</strong> {nftData.owner}
-              </p>
-            </div>
-          ) : (
-            <p>Loading NFT data...</p>
-          )}
-        </section>
-      </main>
-      <footer className="footer">
+
+      <div className="card-container">
+        <div className="card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
+          <div className="card-content">
+            <UploadCV/>
+            <p className="card-title">Add Your First CV NFT</p>
+            <p className="card-para">Just a single click to be your own verifier</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="description" 
+          style={{  
+            color: "#c9c9c9", 
+            fontSize: "1rem",
+            width: "60%",
+            marginLeft: "auto",
+            marginRight: "auto",
+            marginTop: "1rem",
+          }}
+      >
+        <p>
+          CV Verifier is a decentralized application that allows you to create your own CV NFTs. 
+          You can add your CV to the blockchain and share it with others. 
+          This way, you can prove the authenticity of your CV and make it tamper-proof.
+        </p>
+      </div>
+
+      <footer className="footer" style={{ position: 'fixed', bottom: 0, width: '100%' }}>
         <p>trix hahaha FOR Taipei blockchain week</p>
       </footer>
     </div>
