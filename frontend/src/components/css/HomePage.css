@@ -90,7 +90,7 @@ html {
 /* From Uiverse.io by gharsh11032000 */ 
 .card {
   /* width: 600px; */
-  width: 60%;
+  width: 58%;
   height: 200px;
   background-color: #4158D0;
   background-image: linear-gradient(43deg, #4c67f2 0%, #939596 46%, #0ecdf4 100%);
@@ -168,4 +168,50 @@ html {
 
 .card:hover:after {
   transform: translateX(100%);
+}
+
+/* From Uiverse.io by Madflows */ 
+.button {
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 1.5rem;
+  background: #3d3a4e;
+  background-size: 400%;
+  color: #fff;
+  border: 2px solid #6EACDA;
+  cursor: pointer;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(
+    82.3deg,
+    rgb(82, 162, 242) 10.8%,
+    rgba(99, 88, 238, 1) 94.3%
+  );
+  transition: all 0.475s;
+}
+
+.description:hover {
+  transform: scale(1.02); /* Slightly enlarges the element */
+  transition: transform 0.3s ease; /* Smooth transition effect */
 }

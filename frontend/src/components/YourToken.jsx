@@ -7,7 +7,7 @@ import { IoFilter } from "react-icons/io5";
 import MetadataFilter from './MetadataFilter';
 import OverflowCard from './OverflowCard';
 
-const Main = () => {
+const YourToken = () => {
   const [nftData, setNftData] = useState([]);
   const [ownerFilter, setOwnerFilter] = useState('');
   const [senderFilter, setSenderFilter] = useState('');
@@ -125,4 +125,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default YourToken;
