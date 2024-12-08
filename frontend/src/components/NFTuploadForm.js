@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 import { abi } from './abi';
 import { useSDK } from "@metamask/sdk-react";
 import { BrowserProvider } from 'ethers';
+import MetamaskIcon from './svgs/MetamaskIcon';
 
 function NFTUploadForm() {
   const [metadataEntries, setMetadataEntries] = useState([{
@@ -44,7 +45,7 @@ function NFTUploadForm() {
             value: mintingFee,
         });
         await tx.wait();
-        console.log("Minting successful!");
+        alert("Minting successful!");
     } catch (error) {
         console.error("Minting failed:", error);
     }
@@ -56,6 +57,7 @@ function NFTUploadForm() {
       setAccount(accounts?.[0]);
     } catch (err) {
       console.warn("failed to connect..", err);
+      alert("Fail to connect to MetaMask, please try again.");
     }
   };
 
@@ -255,18 +257,52 @@ function NFTUploadForm() {
   };
 
   return (
-    <div className="nft-upload-form futuristic-container">
-      <h2 className="futuristic-title">Upload NFT Metadata</h2>
-      <button onClick={connect} className="futuristic-button">
-        Connect Wallet
+    <div className='uploadFrame' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <header className="header" style={{ textAlign: 'center' }}>
+        <h1 className="title">Upload Your NFT</h1>
+        <p className="subtitle">
+          Filled in your metadata,
+        </p>
+      </header>
+
+      <button 
+        onClick={connect} 
+        className='button'
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <MetamaskIcon />
+        <p 
+          style={{ 
+            marginLeft: '10px', 
+            zIndex: 1,
+          }}
+        >
+          {connected ? 'Wallet Connected' : 'Connect to MetaMask Wallet'}
+        </p>
       </button>
+
       {connected ? (
-        <div className="wallet-info">
-          <p>Connected chain: {chainId}</p>
-          <p>Connected account: {account}</p>
+        <div 
+          className="wallet-info"
+        >
+          <div>
+            <p>Connected chain: {chainId}</p>
+            <p>Connected account: {account}</p>
+          </div>
         </div>
       ) : (
-        <p>Please connect your wallet to continue.</p>
+        <p
+          style={{
+            color: 'white',
+            textAlign: 'center'
+          }}
+        >
+          Please connect your wallet to continue.
+        </p>
       )}
       {connected ? (
         <div className="metadata-entries-container">
@@ -391,26 +427,49 @@ function NFTUploadForm() {
         </div>
       ) : null}
       
-      <div className="form-actions">
+      <div className="form-actions" style={{ textAlign: 'center' }}>
         <button 
           type="button" 
           onClick={addMetadataEntry} 
-          className="futuristic-button add-entry-button"
+          className="button"
           disabled={!connected}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
         >
-          Add Another Entry
+          <p
+            style={{
+              zIndex: 100,
+            }}
+          >
+            Add Another Entry
+          </p>
         </button>
+
         <button 
           type="submit" 
           onClick={handleUpload} 
-          className="futuristic-button submit-button"
+          className="button"
           disabled={!connected}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
         >
-          Show Confirmation
+          <p 
+            style={{
+              zIndex: 1,
+            }}
+          >
+            Show confirmation
+          </p>
         </button>
       </div>
 
-      {uploadStatus && <p className="futuristic-status">{uploadStatus}</p>}
+      {uploadStatus && <p className="futuristic-status" style={{ textAlign: 'center' }}>{uploadStatus}</p>}
 
       {/* Confirmation Dialog */}
       {showDialog && (

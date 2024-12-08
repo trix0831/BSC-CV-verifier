@@ -92,9 +92,10 @@ html {
   /* width: 600px; */
   width: 58%;
   height: 200px;
-  background-color: #4158D0;
-  background-image: linear-gradient(43deg, #4c67f2 0%, #939596 46%, #0ecdf4 100%);
-  /* background-image: linear-gradient(43deg, #0c29ba 0%, #2a627f 46%, #88d2f9 100%); */
+  /* background: linear-gradient(43deg, #0c29ba, #2a627f, #88d2f9); */
+  background: linear-gradient(43deg, #4c67f2 0%, #939596 46%, #0ecdf4 100%);
+  background-size: 200% 200%;
+  animation: gradientAnimation 5s ease infinite;
   border-radius: 8px;
   color: white;
   overflow: hidden;
@@ -104,6 +105,18 @@ html {
   transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
   cursor: pointer;
   margin: 0 auto; /* Center the card horizontally */
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .card-content {
@@ -182,6 +195,7 @@ html {
   color: #fff;
   border: 2px solid #6EACDA;
   cursor: pointer;
+  /* z-index: 0; */
 }
 
 .button:hover::before {
@@ -190,7 +204,7 @@ html {
 
 .button-content {
   position: relative;
-  z-index: 1;
+  /* z-index: 1; */
 }
 
 .button::before {
@@ -211,7 +225,7 @@ html {
   transition: all 0.475s;
 }
 
-.description:hover {
-  transform: scale(1.02); /* Slightly enlarges the element */
-  transition: transform 0.3s ease; /* Smooth transition effect */
+.zoom-effect:hover {
+  transform: scale(1.02); /* Zoom in */
+  transition: transform 0.3s ease;
 }

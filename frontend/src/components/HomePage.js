@@ -34,31 +34,33 @@ function HomePage() {
         </div>
       </div>
 
-      <div 
-          className="description grid grid-cols-2" 
-          style={{  
-            width: "60%",
-            marginLeft: "auto",
-            marginRight: "auto",
-            marginTop: "1rem",
-          }}
+      <div
+        className="description grid grid-cols-2"
+        style={{
+          width: "60%",
+          marginLeft: "auto",
+          marginRight: "auto",
+          marginTop: "1rem",
+        }}
       >
         <div
-          className="description grid grid-cols-1"
+          className="zoom-effect grid grid-cols-1"
           style={{
             border: "2px solid #6EACDA",
             borderRadius: "1rem",
             marginLeft: "1.8rem",
             // marginRight: "auto",
-            transition: "transform 0.3s ease",
+            overflow: "hidden", // Prevent content from spilling out
           }}
         >
           <p
             style={{
-              color: "#c9c9c9", 
+              color: "#c9c9c9",
               fontSize: "1rem",
               margin: "1rem",
+              transition: "transform 0.3s ease", // Add smooth transition
             }}
+            // className="zoom-effect" // Add a class for the zoom effect
           >
             CV Verifier is a decentralized application that allows you to create your own CV NFTs. 
             Add your CV to the blockchain.
@@ -76,19 +78,20 @@ function HomePage() {
             margin: "auto",
           }}
         >
-          <button class="button w-64" onClick={NavUpload}>
-            <span class="button-content">Upload</span>
+          <button className="button w-64" onClick={NavUpload}>
+            <span className="button-content">Upload</span>
           </button>
 
-          <button class="button mt-2 w-64" onClick={NavYourToken}>
-            <span class="button-content">View Your CV</span>
+          <button className="button mt-2 w-64" onClick={NavYourToken}>
+            <span className="button-content">View Your CV</span>
           </button>
-        
-          <button class="button mt-2 w-64" onClick={NavCompare}>
-            <span class="button-content">Compare</span>
+
+          <button className="button mt-2 w-64" onClick={NavCompare}>
+            <span className="button-content">Compare</span>
           </button>
         </div>
       </div>
+
 
       <footer className="footer" style={{ position: 'fixed', bottom: 0, width: '100%' }}>
         <p>trix hahaha FOR Taipei blockchain week</p>
