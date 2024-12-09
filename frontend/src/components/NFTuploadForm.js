@@ -6,6 +6,7 @@ import { abi } from './abi';
 import { useSDK } from "@metamask/sdk-react";
 import { BrowserProvider } from 'ethers';
 import MetamaskIcon from './svgs/MetamaskIcon';
+import  getChainInfo from '../chain';
 
 function NFTUploadForm() {
   const [metadataEntries, setMetadataEntries] = useState([{
@@ -29,14 +30,11 @@ function NFTUploadForm() {
   const REACT_APP_PINATA_SECRET_API_KEY = process.env.REACT_APP_PINATA_SECRET_API_KEY
   const [account, setAccount] = useState();
   const { sdk, connected, connecting, provider, chainId } = useSDK();
-
-  const privateKey = process.env.REACT_APP_PRIVATE_KEY ; 
-  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
-
   const contractABI = abi;
   
   async function mintNFT(to, uri) {
     try {
+      const contractAddress =  getChainInfo(chainId).address;
       const ethersProvider = new BrowserProvider(window.ethereum); // Replace Web3Provider
       const signer = await ethersProvider.getSigner(); // Get current wallet signer
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
@@ -290,7 +288,7 @@ function NFTUploadForm() {
           className="wallet-info"
         >
           <div>
-            <p>Connected chain: {chainId}</p>
+            <p>Connected chain: {parseInt(chainId, 16)}</p>
             <p>Connected account: {account}</p>
           </div>
         </div>
