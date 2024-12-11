@@ -305,10 +305,13 @@ const Compare = () => {
                       award={nft.metadata.award}
                       description={nft.metadata.description}
                       honoree={nft.metadata.honoree}
+                      honoree_address={nft.metadata._address}
                       image={nft.metadata.image}
-                      issuer_address={nft.metadata.issuer_address}
+                      issuer_address={nft.sender}
                       official_web={nft.metadata.official_web}
                       organizer={nft.metadata.organizer}
+                      warning={nft.owner.toLowerCase() !== nft.metadata._address.toLowerCase()}
+                      owner={nft.owner}
                     />
                   </div>
                 ))}
