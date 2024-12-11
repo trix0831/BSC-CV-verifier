@@ -40,10 +40,7 @@ function NFTUploadForm() {
       const ethersProvider = new BrowserProvider(window.ethereum); // Replace Web3Provider
       const signer = await ethersProvider.getSigner(); // Get current wallet signer
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
-        const mintingFee = await contract.mintingFee();
-        const tx = await contract.safeMint(to, uri, {
-            value: mintingFee,
-        });
+        const tx = await contract.safeMint(to, uri);
         await tx.wait();
         // alert("Minting successful!");
         setUploadStatus('Minting successful!');

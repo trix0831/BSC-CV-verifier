@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MyToken is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
-    uint256 public mintingFee = 0.001 ether;
     uint256 public tokenCount = 0;
 
     constructor(address initialOwner)
@@ -19,7 +18,6 @@ contract MyToken is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         public
         payable
     {
-        require(msg.value >= mintingFee, "Insufficient fee");
         uint256 tokenId = tokenCount;
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
