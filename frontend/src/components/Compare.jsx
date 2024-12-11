@@ -4,6 +4,8 @@ import { abi } from './abi';
 import Card from './Card';
 import OverflowCard from './OverflowCard';
 import { FaTimes } from 'react-icons/fa';
+import { useSDK } from "@metamask/sdk-react";
+import getChainInfo from '../chain';
 
 const Compare = () => {
   const [nftData, setNftData] = useState([]);
@@ -11,15 +13,17 @@ const Compare = () => {
   const [addressInput, setAddressInput] = useState('');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [loaded, setLoaded] = useState(false); // New state to track if data is loaded
+  const { sdk, connected, connecting, chainId } = useSDK();
 
-  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
-  const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_NETWORK);
-  const contractABI = abi;
-  const contract = new ethers.Contract(contractAddress, contractABI, provider);
+
 
   useEffect(() => {
     async function fetchAllNFTs() {
       try {
+        const contractAddress = getChainInfo(chainId).address;
+        const provider = new ethers.JsonRpcProvider(getChainInfo(chainId).rpc_url);
+        const contractABI = abi
+        const contract = new ethers.Contract(contractAddress, contractABI, provider);
         const tokenCount = await contract.tokenCount();
         const tokens = [];
 
@@ -39,7 +43,7 @@ const Compare = () => {
     }
 
     fetchAllNFTs();
-  }, []);
+  }, [chainId]);
 
   // Load saved addresses and nicknames from localStorage on mount
   useEffect(() => {
@@ -108,7 +112,7 @@ const Compare = () => {
       <div style={{ fontSize: '1.875rem', margin: '1rem 0', color: '#c9c9c9'}}>
         Compare NFTs by Owner
       </div>
-
+      <div className='subtitle text-xl flex justify-center'>Chain: { getChainInfo(chainId).name}</div>
       <div
         style={{
           display: 'flex',
