@@ -72,7 +72,7 @@ const YourToken = () => {
             value={ownerFilter}
             onChange={(e) => setOwnerFilter(e.target.value)}
             className="input-underline"
-            placeholder="Owner address"
+            placeholder="Honoree address"
             style={{color : "white"}}
           />
         </div>
@@ -83,7 +83,7 @@ const YourToken = () => {
             value={senderFilter}
             onChange={(e) => setSenderFilter(e.target.value)}
             className="input-underline"
-            placeholder="Sender address"
+            placeholder="Issuer address"
             style={{color : "white"}}
           />
         </div>
@@ -99,7 +99,7 @@ const YourToken = () => {
       <div className="grid grid-cols-4 gap-8">
       {nftData.length > 0 ? (
         nftData
-        .filter((nft) => nft.owner.toLowerCase().includes(ownerFilter.toLowerCase()))
+        .filter((nft) => nft.metadata._address.toLowerCase().includes(ownerFilter.toLowerCase()))
         .filter((nft) => nft.sender.toLowerCase().includes(senderFilter.toLowerCase()))
         .filter((nft) =>
           metadataFilters.every((filter) =>
@@ -116,6 +116,7 @@ const YourToken = () => {
             award={nft.metadata.award}
             description={nft.metadata.description}
             honoree={nft.metadata.honoree}
+            honoree_address={nft.metadata._address}
             image={nft.metadata.image}
             issuer_address={nft.sender}
             official_web={nft.metadata.official_web}

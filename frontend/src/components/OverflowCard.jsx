@@ -28,6 +28,7 @@ export default function OverflowCard({
     award,
     description,
     honoree,
+    honoree_address,
     image,
     issuer_address,
     official_web,
@@ -110,8 +111,9 @@ export default function OverflowCard({
           aria-describedby="alert-dialog-slide-description"
         >
       {/* 第一块：Competition Name */}
-      <DialogTitle className="text-center text-xl font-semibold">
-        {competition_name}
+      <DialogTitle className="text-center font-semibold">
+        <div className="text-center text-xl font-semibold"> {competition_name}</div>
+        <div className="text-center text-base "> Honoree: {honoree}</div>
       </DialogTitle>
       <Divider />
 
@@ -124,7 +126,17 @@ export default function OverflowCard({
         />
         <div className="flex flex-col justify-center w-64 items-center">
             <div className="flex flex-col justify-center text-sm gap-4">
-            <div>Owned by: {truncateAddress(owner)}                     
+          <div>Honoree: {truncateAddress(honoree_address)}
+                <IconButton
+                    color="primary"
+                    onClick={(event)=>handleCopy(event, honoree)}
+                    aria-label="Copy wallet address"
+                    sx={{width:28, height:20, ml:1}}
+                    >
+                    <BsCopy/>
+                </IconButton>          
+          </div>
+          <div>Owned by: {truncateAddress(owner)}                     
                 <IconButton
                     color="primary"
                     onClick={(event)=>handleCopy(event, owner)}
@@ -135,16 +147,6 @@ export default function OverflowCard({
                     <BsCopy/>
                 </IconButton>
             </div>
-          <div>Honoree: {truncateAddress(honoree)}
-                <IconButton
-                    color="primary"
-                    onClick={(event)=>handleCopy(event, honoree)}
-                    aria-label="Copy wallet address"
-                    sx={{width:28, height:20, ml:1}}
-                    >
-                    <BsCopy/>
-                </IconButton>          
-          </div>
           <div>Issuer: {truncateAddress(issuer_address)}
             <IconButton
                 color="primary"

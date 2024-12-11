@@ -10,6 +10,7 @@ const MetadataFilter = ({metadataFilters, updateMetadataFilter}) => {
       <Card>
         <div>Filter</div>
           {metadataFilters.map((filter, index) => (
+            ['name', 'honoree', 'image', '_address'].includes(filter.key) ? <></>:
             <div key={index} className="flex w-full gap-4 items-center p-1">
                 <Input
                 onChange={(e) =>
