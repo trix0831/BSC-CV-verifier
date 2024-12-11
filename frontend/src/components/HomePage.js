@@ -6,7 +6,7 @@ function HomePage() {
   const navigate = useNavigate(); // Hook for navigation
 
   const NavUpload = () => {
-    navigate('/upload'); // Navigate to /upload
+    navigate('/issue'); // Navigate to /upload
   };
 
   const NavCompare = () => {
@@ -14,7 +14,7 @@ function HomePage() {
   }
 
   const NavYourToken = () => {
-    navigate('/yourtoken'); // Navigate to /yourtoken
+    navigate('/gallery'); // Navigate to /yourtoken
   }
 
   return (
