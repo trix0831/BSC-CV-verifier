@@ -30,6 +30,10 @@ const Compare = () => {
     setChain(event.target.value);
   };
 
+  const truncateAddress = (addr) => {
+    if (!addr) return "";
+    return `${addr.slice(0, 7)}...${addr.slice(-5)}`;
+  };
 
   useEffect(() => {
     async function fetchAllNFTs() {
@@ -208,7 +212,7 @@ const Compare = () => {
       >
         <div
           style={{
-            width: '33%',
+            width: '25%',
             padding: '1rem',
             borderRight: '1px solid #6EACDA',
             overflowY: 'auto',
@@ -233,6 +237,7 @@ const Compare = () => {
                     selectedCandidate === item.address ? '#222126' : '#39383f',
                   transition: 'background-color 0.3s ease',
                   border: '1.5px solid #6EACDA', // Added light blue border
+                  position: 'relative'
                 }}
                 onClick={() => handleSelectCandidate(item.address)}
               >
@@ -244,10 +249,11 @@ const Compare = () => {
                     }
                   />
                   <span style={{ fontSize: '0.875rem', color: '#e7dfdd' }}>
-                    {item.address}
+                    {truncateAddress(item.address)}
                   </span>
                 </div>
                 <button
+                className="absolute top-4 right-4"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleRemoveAddress(index);
@@ -256,9 +262,6 @@ const Compare = () => {
                     color: '#f56565',
                     background: 'none',
                     cursor: 'pointer',
-                    marginLeft: '-1rem', // Adjusted margin
-                    marginBottom: '1rem', // Adjusted margin
-                    padding: '0.25rem', // Added padding
                   }}
                 >
                   <FaTimes/>
