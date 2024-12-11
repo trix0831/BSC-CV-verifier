@@ -5,10 +5,20 @@ const Chain = {
         rpc_url: process.env.REACT_APP_FUJI_URL,
         name: "Fuji"
     },
+    43114:{
+        address: process.env.REACT_APP_AVA_CONTRACT_ADDRESS,
+        rpc_url: process.env.REACT_APP_AVA_URL,
+        name: "AVA"
+    },
     97:{
         address: process.env.REACT_APP_BSCT_CONTRACT_ADDRESS,
         rpc_url: process.env.REACT_APP_BSCT_URL,
         name: "BSCT"
+    },
+    96:{
+        address: process.env.REACT_APP_BSC_CONTRACT_ADDRESS,
+        rpc_url: process.env.REACT_APP_BSC_URL,
+        name: "BSC"
     },
 };
 
