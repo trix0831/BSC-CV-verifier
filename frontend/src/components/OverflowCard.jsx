@@ -68,7 +68,7 @@ export default function OverflowCard({
     <>
     <Card 
       className="main"
-      sx={{ width: 240, paddingBottom:0, paddingTop:0 }}
+      sx={{ width: 240, height: 240,paddingBottom:0, paddingTop:0 }}
       onClick={()=>setPage(!page)}
     >
       <Tooltip title="Owner and honoree differ—this NFT may no longer represent the original award recipient." placement="right">

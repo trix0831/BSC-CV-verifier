@@ -108,8 +108,8 @@ const Compare = () => {
     }
   };
 
-  const filteredNfts = nftData.filter(
-    (nft) => selectedCandidate && nft.owner.toLowerCase() === selectedCandidate
+  const filteredNfts = (owner_address) => nftData.filter(
+    (nft) => owner_address && nft.owner.toLowerCase() === owner_address.toLowerCase()
   );
 
   const handleNicknameChange = (index, nickname) => {
@@ -222,6 +222,7 @@ const Compare = () => {
         >
           {compareAddresses.length > 0 ? (
             compareAddresses.map((item, index) => (
+              <div style={{height: '18rem'}}>
               <div
                 key={index}
                 style={{
@@ -267,6 +268,7 @@ const Compare = () => {
                   <FaTimes/>
                 </button>
               </div>
+              </div>
             ))
           ) : (
             <p style={{color: '#c9c9c9'}}>No addresses selected.</p>
@@ -282,16 +284,10 @@ const Compare = () => {
             scrollbarWidth: 'thin',
           }}
         >
-          {selectedCandidate ? (
-            filteredNfts.length > 0 ? (
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '2rem',
-                }}
-              >
-                {filteredNfts.map((nft) => (
+          {compareAddresses.map((item, index) => (
+            <div style={{height: '18rem'}} className="overflow-x-auto">
+              {filteredNfts(item.address).length > 0 ? (<div className="flex space-x-8 h-full"> 
+                {filteredNfts(item.address).map((nft) => (
                   <div
                     key={nft.tokenId}
                     style={{
@@ -315,13 +311,9 @@ const Compare = () => {
                     />
                   </div>
                 ))}
-              </div>
-            ) : (
-              <p>No NFTs found for the selected address.</p>
-            )
-          ) : (
-            <p>Please select a candidate to view their NFTs.</p>
-          )}
+              </div>):( <p>No NFTs found for the selected address.</p>)}
+            </div>
+          ))}
         </div>
       </div>
     </div>
