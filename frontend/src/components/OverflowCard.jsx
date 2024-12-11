@@ -16,6 +16,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import './css/OverflowCard.css';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -63,7 +64,11 @@ export default function OverflowCard({
 
   return (
     <>
-    <Card variant="outlined" sx={{ width: 240, paddingBottom:0 }} onClick={()=>setPage(!page)}>
+    <Card 
+      className="main"
+      sx={{ width: 240, paddingBottom:0 }}
+      onClick={()=>setPage(!page)}
+    >
       <CardOverflow>
         <AspectRatio ratio="2">
           <img
@@ -78,13 +83,25 @@ export default function OverflowCard({
         <Typography level="title-md">{competition_name}</Typography>
         <Typography level="body-sm">{award}</Typography>
       </CardContent>
-      <CardOverflow variant="soft" sx={{ bgcolor: 'background.level1' }}>
+
+      <CardOverflow 
+        variant="soft" 
+          className="card-bottom "
+      >
         <Divider inset="context" />
-        <CardContent orientation="horizontal" className='flex items-center text-xs'>
-            <button onClick={handleClickOpen} className='text-[12px] text-sky-700'>Open Detail</button>
+        <CardContent 
+          orientation="horizontal" 
+          className='flex items-center text-xs'
+        >
+            <button onClick={handleClickOpen} className='text-[12px] text-sky-700'>
+              Open Detail
+            </button>
         </CardContent>
       </CardOverflow>
+
     </Card>
+
+
     <Dialog
           open={open}
           TransitionComponent={Transition}

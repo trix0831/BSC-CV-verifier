@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './css/HomePage.css';
+import './css/YourToken.css';
 import { ethers } from 'ethers';
 import { abi } from './abi';
 import Card from './Card';
@@ -58,9 +58,12 @@ const YourToken = () => {
   }, [chainId]);
 
   return (
-    <div className="homepage flex-col items-center w-full py-8">
-      <div className='w-80 text-3xl my-4'>Verified Token Page</div>
-      <div className='w-80 text-xl mb-4 flex justify-center'>Chain: { getChainInfo(chainId).name}</div>
+    <div 
+      className="homepage flex-col items-center w-full py-8"
+      
+    >
+      <div className='title  text-3xl my-4 mb-4 '>Verified Token Page</div>
+      <div className='subtitle text-xl mb-4 flex justify-center'>Chain: { getChainInfo(chainId).name}</div>
       <div className='w-screen flex items-center justify-center gap-8 mt-0 my-12'>
         <div className="w-1/4">
           <input
@@ -69,7 +72,8 @@ const YourToken = () => {
             value={ownerFilter}
             onChange={(e) => setOwnerFilter(e.target.value)}
             className="input-underline"
-            placeholder="Ower address"
+            placeholder="Owner address"
+            style={{color : "white"}}
           />
         </div>
         <div className="w-1/4">
@@ -80,6 +84,7 @@ const YourToken = () => {
             onChange={(e) => setSenderFilter(e.target.value)}
             className="input-underline"
             placeholder="Sender address"
+            style={{color : "white"}}
           />
         </div>
       <div className="w-12 flex justify-center my-4">
@@ -120,7 +125,14 @@ const YourToken = () => {
           ></OverflowCard>
         ))
       ) : (
-        <p>No NFTs found</p>
+        <p
+          style={{
+            color:"white", 
+            margin: "0 auto"
+          }}
+        >
+          No NFTs found
+        </p>
       )}
       </div>
     </div>

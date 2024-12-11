@@ -24,6 +24,7 @@ function NFTUploadForm() {
   const [showConnectionDialog, setShowConnectionDialog] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [showAutoFillDialog, setShowAutoFillDialog] = useState(false);
+  const [showUploadingDialog, setShowUploadingDialog] = useState(false);
   const [lastEntryIndex, setLastEntryIndex] = useState(0);
   const [autoFillOptions, setAutoFillOptions] = useState({});
 
@@ -44,10 +45,13 @@ function NFTUploadForm() {
             value: mintingFee,
         });
         await tx.wait();
-        alert("Minting successful!");
+        // alert("Minting successful!");
+        setUploadStatus('Minting successful!');
+        
     } catch (error) {
         console.error("Minting failed:", error);
-        alert("Minting failed, please try again.");
+        // alert("Minting failed, please try again.");
+        setUploadStatus('Minting failed, please try again.');
     }
   }
 
@@ -56,6 +60,7 @@ function NFTUploadForm() {
       const accounts = await sdk?.connect();
       setAccount(accounts?.[0]);
       setShowConnectionDialog(false);
+      setShowDialog(true);
     } catch (err) {
       console.warn("failed to connect..", err);
       alert("Fail to connect to MetaMask, please try again.");
@@ -66,6 +71,7 @@ function NFTUploadForm() {
   const handleDialogClose = (confirm) => {
     setShowDialog(false);
     if (confirm) {
+      setShowUploadingDialog(true);
       handleSubmit();
     }
   };
@@ -184,7 +190,7 @@ function NFTUploadForm() {
   };
 
   const handleSubmit = async () => {
-    setUploadStatus('Uploading...');
+    setUploadStatus('Uploading MetaData...');
     const uploadPromises = metadataEntries.map(async (entry) => {
       const formData = new FormData();
       formData.append('file', entry.file);
@@ -223,7 +229,8 @@ function NFTUploadForm() {
           }
         });
         const uri = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`
-        mintNFT(account, uri) // first para is to
+        console.log("'upload metadata successful, uploading NFT")
+        await mintNFT(entry._address, uri) // first para is to
         return uri;
       } catch (error) {
         return `Upload failed for ${entry.name}`;
@@ -233,37 +240,48 @@ function NFTUploadForm() {
     try {
       const results = await Promise.all(uploadPromises);
       console.log(results)
-      setUploadStatus(
-        <div>
-          <p>Upload Results:</p>
-          <ul>
-            {results.map((url, index) => (
-              <li key={index}>{metadataEntries[index].name}: {url}</li>
-            ))}
-          </ul>
-        </div>
-      );
+      // setUploadStatus('Upload successful!');
+      // setUploadStatus(
+      //   <div>
+      //     <p>Upload Results:</p>
+      //     <ul>
+      //       {results.map((url, index) => (
+      //         <li key={index}>{metadataEntries[index].name}: {url}</li>
+      //       ))}
+      //     </ul>
+      //   </div>
+      // );
     } catch (error) {
-      setUploadStatus('Failed to upload. Please try again.');
+      setUploadStatus('Failed to upload MetaData. Please try again.');
     }
   };
 
-  const handleUpload = (e) => {
+  const handleConnectWallet = (e) => {
     e.preventDefault();
     
     const isValid = validateEntries();
     
     if (isValid) {
-      setShowDialog(true);
+      setShowConnectionDialog(true);
     }
   };
 
+  const truncateAddress = (addr) => {
+    if (!addr) return "";
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
   return (
-    <div className='uploadFrame' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className='uploadFrame' 
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <header className="header" style={{ textAlign: 'center' }}>
-        <h1 className="title">Upload Your NFT</h1>
+        <p className="title">
+          Upload Your NFT
+        </p>
         <p className="subtitle">
-          Filled in your metadata, after 
+          After filling Metadata, connect to your MetaMask wallet and upload.<br/>
+          Upload your your CV NFT have never been easier.
         </p>
       </header>
 
@@ -289,18 +307,29 @@ function NFTUploadForm() {
       {connected ? (
         <div className="metadata-entries-container">
           {metadataEntries.map((entry, index) => (
-            <div key={index} className={`metadata-entry ${Object.keys(entry.errors).length > 0 ? 'has-errors' : ''}`}>
+            
+            <div key={index} className="metadata-entry">
               <div className="entry-header">
-                <h3>Entry {index + 1}</h3>
+                <p
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem',
+                    fontDecoration: 'underline',
+                    color: 'white',
+                  }}
+                >
+                  Entry {index + 1}
+                </p>
                 {metadataEntries.length > 1 && (
                   <button 
                     onClick={() => removeMetadataEntry(index)} 
-                    className="futuristic-button remove-entry-button"
+                    className="remove-entry-button"
                   >
                     Remove
                   </button>
                 )}
               </div>
+
               <div className={`futuristic-input-group ${entry.errors.name ? 'error' : ''}`}>
                 <label>Name:</label>
                 <input
@@ -441,7 +470,7 @@ function NFTUploadForm() {
         </button>
         <button 
           type="submit" 
-          onClick={handleUpload} 
+          onClick={handleConnectWallet} 
           className="button"
           disabled={!connected}
           style={{
@@ -462,12 +491,12 @@ function NFTUploadForm() {
         </button>
       </div>
 
-      {uploadStatus && <p className="futuristic-status" style={{ textAlign: 'center' }}>{uploadStatus}</p>}
+      {/* {uploadStatus && <p className="futuristic-status" style={{ textAlign: 'center' }}>{uploadStatus}</p>} */}
 
       {/* Connection Dialog */}
       {showConnectionDialog && (
         <div className="confirmation-overlay">
-          <div 
+          <div
             className="confirmation-dialog scrollable-dialog"
             style={{ textAlign: 'center' }}
           >
@@ -490,6 +519,25 @@ function NFTUploadForm() {
                 {account ? 'Wallet Connected' : 'Connect to MetaMask Wallet'}
               </p>
             </button>
+
+            <button
+              className="button"
+              onClick={() => setShowConnectionDialog(false)}
+              style={{
+                margin: "0 auto",
+                width: "30%",
+              }}
+            >
+              <p
+                style={{
+                  position: 'relative',
+                  zIndex: 1,
+                }} 
+              >
+                Cancel
+              </p>
+
+            </button>
           </div>
         </div>
       )}
@@ -501,13 +549,26 @@ function NFTUploadForm() {
             <p
               style={{
                 textAlign: 'center',
-                marginBottom: '20px',
+                marginBottom: '10px',
                 fontSize: '1.5rem',
                 zIndex: 1
               }}
             >
               Confirm Metadata Upload
             </p>
+              
+            <p
+              style={{
+                textAlign: 'center',
+                marginBottom: '10px',
+                fontSize: '1rem',
+                zIndex: 1
+              }}
+            >
+                  Your Address : {truncateAddress(account)} <br/>
+                  Current Chain : {parseInt(chainId, 16)}
+            </p>
+
             <div className="confirmation-content">
               {metadataEntries.map((entry, index) => (
                 <div key={index} className="confirmation-entry">
@@ -553,7 +614,7 @@ function NFTUploadForm() {
                   </li>
                   <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: 'bold' }}>Honoree Address:</span>
-                    <span style={{ textAlign: 'right' }}>{entry._address}</span>
+                    <span style={{ textAlign: 'right' }}>{truncateAddress(entry._address)}</span>
                   </li>
                   <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: 'bold' }}>Image:</span>
@@ -635,15 +696,66 @@ function NFTUploadForm() {
                 onClick={() => handleAutoFillDialogClose(true)} 
                 className="button"
               >
-                Apply Auto-fill
+                <p
+                  style={{
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                >
+                  Apply Auto-fill
+                </p>
               </button>
               <button 
                 onClick={() => handleAutoFillDialogClose(false)} 
                 className="button"
               >
-                Cancel
+                <p
+                  style={{
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                >
+                    Cancel
+                </p>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showUploadingDialog && (
+        <div className="confirmation-overlay">
+          <div
+            className="confirmation-dialog scrollable-dialog"
+            style={{ textAlign: 'center'}}
+          >
+            <p
+              className='upload-status'
+              style={{
+              }}
+            >
+              {uploadStatus}
+            </p>
+            
+            <button
+              className="button"
+              onClick={() => setShowUploadingDialog(false)}
+              style={{
+                margin: "0 auto",
+                width: "30%",
+                marginTop: '20px'
+              }}
+            >
+              <p
+                style={{
+                  position: 'relative',
+                  zIndex: 1
+                }} 
+              >
+                Done
+              </p>
+
+            </button>
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { ethers } from 'ethers';
 import { abi } from './abi';
 import Card from './Card';
+import OverflowCard from './OverflowCard';
 import { FaTimes } from 'react-icons/fa';
 
 const Compare = () => {
@@ -123,22 +124,22 @@ const Compare = () => {
             onChange={(e) => setAddressInput(e.target.value)}
             className="input-underline w-1/3"
             placeholder="Enter address to compare"
+            style={{ color: 'white' }}
           />
           <button
             onClick={handleAddAddress}
-            style={{
-              border: '1.5px solid #6EACDA', // Light blue border
-              backgroundColor: '#222126 hover:#39383f',      // Gray background
-              color: '#c9c9c9',             // Text color
-              padding: '10px 20px',         // Optional: Add some padding
-              cursor: 'pointer',            // Optional: Change cursor to pointer
-              transition: 'background-color 0.3s ease', // Smooth hover effect
-              borderRadius: '0.5rem',       // Optional: Add some border radius
-            }}
+            className="button"
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#222126'} // Change background on hover
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#39383f'}    // Reset background on hover out
           >
-            Add Address
+            <p
+              style={{
+                position: "relative",
+                zIndex : 1
+              }}
+            >
+              Add Address
+            </p>
           </button>
 
         </div>
@@ -241,7 +242,7 @@ const Compare = () => {
                       justifyContent: 'center',
                     }}
                   >
-                    <Card
+                    <OverflowCard
                       name={nft.metadata.name}
                       competition_name={nft.metadata.competition_name}
                       award={nft.metadata.award}
