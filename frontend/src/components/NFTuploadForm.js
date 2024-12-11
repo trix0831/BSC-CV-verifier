@@ -21,6 +21,7 @@ function NFTUploadForm() {
     errors: {}
   }]);
   const [uploadStatus, setUploadStatus] = useState('');
+  const [showConnectionDialog, setShowConnectionDialog] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [showAutoFillDialog, setShowAutoFillDialog] = useState(false);
   const [lastEntryIndex, setLastEntryIndex] = useState(0);
@@ -46,6 +47,7 @@ function NFTUploadForm() {
         alert("Minting successful!");
     } catch (error) {
         console.error("Minting failed:", error);
+        alert("Minting failed, please try again.");
     }
   }
 
@@ -53,6 +55,7 @@ function NFTUploadForm() {
     try {
       const accounts = await sdk?.connect();
       setAccount(accounts?.[0]);
+      setShowConnectionDialog(false);
     } catch (err) {
       console.warn("failed to connect..", err);
       alert("Fail to connect to MetaMask, please try again.");
@@ -167,6 +170,7 @@ function NFTUploadForm() {
       if (!entry.award) errors.award = true;
       if (!entry.honoree) errors.honoree = true;
       if (!entry.file) errors.file = true;
+      if (!entry._address) errors._address = true;
 
       return {
         ...entry,
@@ -219,7 +223,7 @@ function NFTUploadForm() {
           }
         });
         const uri = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`
-        mintNFT(account, uri)
+        mintNFT(account, uri) // first para is to
         return uri;
       } catch (error) {
         return `Upload failed for ${entry.name}`;
@@ -259,31 +263,11 @@ function NFTUploadForm() {
       <header className="header" style={{ textAlign: 'center' }}>
         <h1 className="title">Upload Your NFT</h1>
         <p className="subtitle">
-          Filled in your metadata,
+          Filled in your metadata, after 
         </p>
       </header>
 
-      <button 
-        onClick={connect} 
-        className='button'
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <MetamaskIcon />
-        <p 
-          style={{ 
-            marginLeft: '10px', 
-            zIndex: 1,
-          }}
-        >
-          {connected ? 'Wallet Connected' : 'Connect to MetaMask Wallet'}
-        </p>
-      </button>
-
-      {connected ? (
+      {/* {connected ? (
         <div 
           className="wallet-info"
         >
@@ -301,7 +285,7 @@ function NFTUploadForm() {
         >
           Please connect your wallet to continue.
         </p>
-      )}
+      )} */}
       {connected ? (
         <div className="metadata-entries-container">
           {metadataEntries.map((entry, index) => (
@@ -397,10 +381,12 @@ function NFTUploadForm() {
                 <label>Honoree's Address:</label>
                 <input
                   type="text"
-                  value={account}
-                  disabled
+                  value={entry._address}
+                  onChange={(e) => updateMetadataEntry(index, '_address', e.target.value)}
+                  required
                   className="futuristic-input"
                 />
+                {entry.errors._address && <span className="error-message">Honoree address is required</span>}
               </div>
               <div className={`futuristic-input-group ${entry.errors.file ? 'error' : ''}`}>
                 <label>Upload Image:</label>
@@ -425,16 +411,24 @@ function NFTUploadForm() {
         </div>
       ) : null}
       
-      <div className="form-actions" style={{ textAlign: 'center' }}>
+      <div
+        style={{ 
+          textAlign: 'center', 
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: '20px'
+      }}>
         <button 
           type="button" 
-          onClick={addMetadataEntry} 
+          onClick={addMetadataEntry}
           className="button"
           disabled={!connected}
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            padding: '10px',
+            marginRight: '20px'
           }}
         >
           <p
@@ -445,7 +439,6 @@ function NFTUploadForm() {
             Add Another Entry
           </p>
         </button>
-
         <button 
           type="submit" 
           onClick={handleUpload} 
@@ -454,7 +447,9 @@ function NFTUploadForm() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center', 
+            padding: '10px',
+            marginLeft: '20px'
           }}
         >
           <p 
@@ -469,32 +464,133 @@ function NFTUploadForm() {
 
       {uploadStatus && <p className="futuristic-status" style={{ textAlign: 'center' }}>{uploadStatus}</p>}
 
+      {/* Connection Dialog */}
+      {showConnectionDialog && (
+        <div className="confirmation-overlay">
+          <div 
+            className="confirmation-dialog scrollable-dialog"
+            style={{ textAlign: 'center' }}
+          >
+            <h3>Please connect to you metamask wallet</h3>
+            <button 
+              onClick={connect} 
+              className='button'
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <MetamaskIcon />
+              <p 
+                style={{ 
+                  zIndex: 1,
+                }}
+              >
+                {account ? 'Wallet Connected' : 'Connect to MetaMask Wallet'}
+              </p>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Confirmation Dialog */}
       {showDialog && (
         <div className="confirmation-overlay">
           <div className="confirmation-dialog scrollable-dialog">
-            <h3>Confirm Metadata Upload</h3>
+            <p
+              style={{
+                textAlign: 'center',
+                marginBottom: '20px',
+                fontSize: '1.5rem',
+                zIndex: 1
+              }}
+            >
+              Confirm Metadata Upload
+            </p>
             <div className="confirmation-content">
               {metadataEntries.map((entry, index) => (
                 <div key={index} className="confirmation-entry">
-                  <h4>Entry {index + 1}</h4>
-                  <ul>
-                    <li>Name: {entry.name}</li>
-                    <li>Description: {entry.description}</li>
-                    <li>Competition Name: {entry.competitionName}</li>
-                    <li>Organizer: {entry.organizer}</li>
-                    <li>Official Web: {entry.officialWeb}</li>
-                    <li>Award: {entry.award}</li>
-                    <li>Honoree: {entry.honoree}</li>
-                    <li>Honoree Address: {account}</li>
-                    <li>Image: <img src={entry.file ? URL.createObjectURL(entry.file) : ''} alt="Preview" width="100" /></li>
-                  </ul>
-                </div>
+                <p
+                  style={{
+                    zIndex: 1,
+                    fontWeight: 'bold',
+                    marginBottom: '10px',
+                    fontSize: '1.2rem',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Entry {index + 1}
+                </p>
+                <ul>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold'  }}>Name:</span>
+                    <span style={{ textAlign: 'right' }}>{entry.name}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Description:</span>
+                    <span style={{ textAlign: 'right' }}>{entry.description}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Competition Name:</span>
+                    <span style={{ textAlign: 'right' }}>{entry.competitionName}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Organizer:</span>
+                    <span style={{ textAlign: 'right' }}>{entry.organizer}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Official Web:</span>
+                    <span style={{ textAlign: 'right' }}>{entry.officialWeb}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Award:</span>
+                    <span style={{ textAlign: 'right' }}>{entry.award}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Honoree:</span>
+                    <span style={{ textAlign: 'right' }}>{entry.honoree}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Honoree Address:</span>
+                    <span style={{ textAlign: 'right' }}>{entry._address}</span>
+                  </li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Image:</span>
+                    <span>
+                      <img src={entry.file ? URL.createObjectURL(entry.file) : ''} alt="Preview" width="100" />
+                    </span>
+                  </li>
+                </ul>
+              </div>      
               ))}
             </div>
             <div className="dialog-actions">
-              <button onClick={() => handleDialogClose(true)} className="futuristic-button">Yes, Upload</button>
-              <button onClick={() => handleDialogClose(false)} className="futuristic-button">Cancel</button>
+              <button onClick={() => handleDialogClose(true)} 
+                className="button"
+              >
+                <p
+                style={{
+                  position: 'relative',
+                  zIndex: 1,
+                }}
+                >
+                 Correct, upload 
+                </p>
+              </button>
+              <button 
+                onClick={() => handleDialogClose(false)} 
+                className="button"                
+              >
+                <p
+                style={{
+                  position: 'relative',
+                  zIndex: 1,
+                }}
+                >
+                  Cancel
+                </p>
+              </button>
             </div>
           </div>
         </div>
@@ -526,16 +622,24 @@ function NFTUploadForm() {
                 </div>
               ))}
             </div>
-            <div className="dialog-actions">
+
+            <div 
+              className="dialog-actions"
+              style={{
+                marginBottom: '20px',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
               <button 
                 onClick={() => handleAutoFillDialogClose(true)} 
-                className="futuristic-button"
+                className="button"
               >
                 Apply Auto-fill
               </button>
               <button 
                 onClick={() => handleAutoFillDialogClose(false)} 
-                className="futuristic-button"
+                className="button"
               >
                 Cancel
               </button>
