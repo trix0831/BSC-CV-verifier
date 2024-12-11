@@ -10,7 +10,7 @@ import  getChainInfo from '../chain';
 
 function NFTUploadForm() {
   const [metadataEntries, setMetadataEntries] = useState([{
-    name: '',
+    name: 'CVV token',
     description: '',
     competitionName: '',
     organizer: '',
@@ -96,7 +96,7 @@ function NFTUploadForm() {
       
       // Reset fields not selected for auto-fill
       const newEntryTemplate = {
-        name: '',
+        name: 'CVV token',
         description: '',
         competitionName: '',
         organizer: '',
@@ -141,7 +141,7 @@ function NFTUploadForm() {
     } else {
       // If it's the first entry, just add a new blank entry
       setMetadataEntries([...metadataEntries, {
-        name: '',
+        name: 'CVV token',
         description: '',
         competitionName: '',
         organizer: '',
@@ -195,16 +195,16 @@ function NFTUploadForm() {
       try {
         // Upload image to Pinata
         const imageResponse = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
-            'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
-          }
+        headers: {
+        'Content-Type': 'multipart/form-data',
+        'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
+        'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
+        }
         });
 
         const imageHash = imageResponse.data.IpfsHash;
         const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageHash}`;
-
+        
         // Create metadata JSON
         const metadata = {
           name: entry.name,
@@ -215,18 +215,19 @@ function NFTUploadForm() {
           award: entry.award,
           honoree: entry.honoree,
           image: imageUrl,
-          _address: account
+          _address: entry._address
         };
-
+        console.log(account)
+        console.log(metadata)
         // Upload metadata to Pinata
         const metadataResponse = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', metadata, {
-          headers: {
-            'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
-            'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
-          }
+        headers: {
+        'pinata_api_key': `${REACT_APP_PINATA_API_KEY}`,
+        'pinata_secret_api_key': `${REACT_APP_PINATA_SECRET_API_KEY}`
+        }
         });
         const uri = `https://gateway.pinata.cloud/ipfs/${metadataResponse.data.IpfsHash}`
-        console.log("'upload metadata successful, uploading NFT")
+                console.log("'upload metadata successful, uploading NFT")
         await mintNFT(entry._address, uri) // first para is to
         return uri;
       } catch (error) {
@@ -327,27 +328,6 @@ function NFTUploadForm() {
                 )}
               </div>
 
-              <div className={`futuristic-input-group ${entry.errors.name ? 'error' : ''}`}>
-                <label>Name:</label>
-                <input
-                  type="text"
-                  value={entry.name}
-                  onChange={(e) => updateMetadataEntry(index, 'name', e.target.value)}
-                  required
-                  className="futuristic-input"
-                />
-                {entry.errors.name && <span className="error-message">Name is required</span>}
-              </div>
-              <div className={`futuristic-input-group ${entry.errors.description ? 'error' : ''}`}>
-                <label>Description:</label>
-                <textarea
-                  value={entry.description}
-                  onChange={(e) => updateMetadataEntry(index, 'description', e.target.value)}
-                  required
-                  className="futuristic-textarea"
-                />
-                {entry.errors.description && <span className="error-message">Description is required</span>}
-              </div>
               <div className={`futuristic-input-group ${entry.errors.competitionName ? 'error' : ''}`}>
                 <label>Competition Name:</label>
                 <input
@@ -358,6 +338,16 @@ function NFTUploadForm() {
                   className="futuristic-input"
                 />
                 {entry.errors.competitionName && <span className="error-message">Competition Name is required</span>}
+              </div>
+              <div className={`futuristic-input-group ${entry.errors.description ? 'error' : ''}`}>
+                <label>Description:</label>
+                <textarea
+                  value={entry.description}
+                  onChange={(e) => updateMetadataEntry(index, 'description', e.target.value)}
+                  required
+                  className="futuristic-textarea"
+                />
+                {entry.errors.description && <span className="error-message">Description is required</span>}
               </div>
               <div className={`futuristic-input-group ${entry.errors.organizer ? 'error' : ''}`}>
                 <label>Organizer:</label>
