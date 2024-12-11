@@ -6,7 +6,19 @@ import { IoFilter } from "react-icons/io5";
 import MetadataFilter from './MetadataFilter';
 import OverflowCard from './OverflowCard';
 import getChainInfo from '../chain';
-import { useSDK } from "@metamask/sdk-react";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import AvaxIcon from './svgs/Avax';
+import BNBIcon from './svgs/BNB';
+
+const ChainNameToObject = {
+  "BSC": getChainInfo(96, false),
+  "AVAX": getChainInfo(43114, false),
+  "BSCT": getChainInfo(97, false),
+  "FUJI": getChainInfo(43113, false),
+}
 
 const YourToken = () => {
   const [nftData, setNftData] = useState([]);
@@ -14,7 +26,11 @@ const YourToken = () => {
   const [senderFilter, setSenderFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [metadataFilters, setMetadataFilters] = useState([]);
-  const { sdk, connected, connecting, chainId } = useSDK();
+  const [chain, setChain] = useState('BSC');
+
+  const handleChange = (event) => {
+    setChain(event.target.value);
+  };
 
   const updateMetadataFilter = (index, key, value) => {
     const updatedFilters = [...metadataFilters];
@@ -30,8 +46,8 @@ const YourToken = () => {
   useEffect(() => {
     async function fetchAllNFTs() {
       try {
-        const contractAddress = getChainInfo(chainId).address;
-        const provider = new ethers.JsonRpcProvider(getChainInfo(chainId).rpc_url);
+        const contractAddress = ChainNameToObject[chain].address;
+        const provider = new ethers.JsonRpcProvider(ChainNameToObject[chain].rpc_url);
         const contractABI = abi
         const contract = new ethers.Contract(contractAddress, contractABI, provider);
           const tokenCount = await contract.tokenCount()
@@ -54,7 +70,7 @@ const YourToken = () => {
   }
   
   fetchAllNFTs();
-  }, [chainId]);
+  }, [chain]);
 
   return (
     <div 
@@ -62,7 +78,38 @@ const YourToken = () => {
       
     >
       <div className='title  text-3xl my-4 mb-4 '>Verified Token Page</div>
-      <div className='subtitle text-xl mb-4 flex justify-center'>Chain: { getChainInfo(chainId).name}</div>
+<div className='flex items-center gap-8'>
+<FormControl variant="standard" sx={{ m: 1, minWidth: 200, "& .MuiInputLabel-root": {
+      color: "white" 
+    },
+    "& .MuiInput-underline:before": {
+      borderBottomColor: "white"
+    },
+    "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+      borderBottomColor: "white"
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "white" 
+    }}} >
+        <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">Chain</InputLabel>
+        <Select
+         sx={{color: "white"}} 
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={chain}
+          onChange={handleChange}
+          label="Chain"
+        >
+          <MenuItem value="BSC">BSC</MenuItem>
+          <MenuItem value="AVAX">AVAX</MenuItem>
+          <MenuItem value="BSCT">BSC-Test</MenuItem>
+          <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
+        </Select>
+       
+      </FormControl>  
+      {['BSC', 'BSCT'].includes(chain)?<BNBIcon size={24} color="#F0B90B" />:<AvaxIcon size={24} color="#ff0000" />}
+</div>
+
       <div className='w-screen flex items-center justify-center gap-8 mt-0 my-12'>
         <div className="w-1/4">
           <input

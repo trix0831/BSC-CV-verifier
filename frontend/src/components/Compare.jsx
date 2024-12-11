@@ -3,8 +3,20 @@ import { ethers } from 'ethers';
 import { abi } from './abi';
 import OverflowCard from './OverflowCard';
 import { FaTimes } from 'react-icons/fa';
-import { useSDK } from "@metamask/sdk-react";
 import getChainInfo from '../chain';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import AvaxIcon from './svgs/Avax';
+import BNBIcon from './svgs/BNB';
+
+const ChainNameToObject = {
+  "BSC": getChainInfo(96, false),
+  "AVAX": getChainInfo(43114, false),
+  "BSCT": getChainInfo(97, false),
+  "FUJI": getChainInfo(43113, false),
+}
 
 const Compare = () => {
   const [nftData, setNftData] = useState([]);
@@ -12,15 +24,18 @@ const Compare = () => {
   const [addressInput, setAddressInput] = useState('');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [loaded, setLoaded] = useState(false); // New state to track if data is loaded
-  const { sdk, connected, connecting, chainId } = useSDK();
+  const [chain, setChain] = useState('BSC');
 
+  const handleChange = (event) => {
+    setChain(event.target.value);
+  };
 
 
   useEffect(() => {
     async function fetchAllNFTs() {
       try {
-        const contractAddress = getChainInfo(chainId).address;
-        const provider = new ethers.JsonRpcProvider(getChainInfo(chainId).rpc_url);
+        const contractAddress = ChainNameToObject[chain].address;
+        const provider = new ethers.JsonRpcProvider(ChainNameToObject[chain].rpc_url);
         const contractABI = abi
         const contract = new ethers.Contract(contractAddress, contractABI, provider);
         const tokenCount = await contract.tokenCount();
@@ -42,7 +57,7 @@ const Compare = () => {
     }
 
     fetchAllNFTs();
-  }, [chainId]);
+  }, [chain]);
 
   // Load saved addresses and nicknames from localStorage on mount
   useEffect(() => {
@@ -111,7 +126,37 @@ const Compare = () => {
       <div style={{ fontSize: '1.875rem', margin: '1rem 0', color: '#c9c9c9'}}>
         Compare NFTs by Owner
       </div>
-      <div className='subtitle text-xl flex justify-center'>Chain: { getChainInfo(chainId).name}</div>
+      <div className='flex items-center gap-8'>
+<FormControl variant="standard" sx={{ m: 1, minWidth: 200, "& .MuiInputLabel-root": {
+      color: "white" 
+    },
+    "& .MuiInput-underline:before": {
+      borderBottomColor: "white"
+    },
+    "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+      borderBottomColor: "white"
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "white" 
+    }}} >
+        <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">Chain</InputLabel>
+        <Select
+         sx={{color: "white"}} 
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={chain}
+          onChange={handleChange}
+          label="Chain"
+        >
+          <MenuItem value="BSC">BSC</MenuItem>
+          <MenuItem value="AVAX">AVAX</MenuItem>
+          <MenuItem value="BSCT">BSC-Test</MenuItem>
+          <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
+        </Select>
+       
+      </FormControl>  
+      {['BSC', 'BSCT'].includes(chain)?<BNBIcon size={24} color="#F0B90B" />:<AvaxIcon size={24} color="#ff0000" />}
+</div>
       <div
         style={{
           display: 'flex',

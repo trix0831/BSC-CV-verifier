@@ -28,8 +28,9 @@ const defaultChain = {
     name: "Unsupported",
 };
 
-const getChainInfo = (chainId) => {
-    return Chain[parseInt(chainId, 16)] || defaultChain;
+const getChainInfo = (chainId, is64 = true) => {
+    if(is64) return Chain[parseInt(chainId, 16)] || defaultChain;
+    return Chain[chainId] || defaultChain;
 };
 
 export default getChainInfo;
