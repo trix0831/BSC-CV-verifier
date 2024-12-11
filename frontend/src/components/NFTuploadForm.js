@@ -122,37 +122,15 @@ function NFTUploadForm() {
   };
 
   // Add a new metadata entry
-  const addMetadataEntry = () => {
-    // If there's more than one entry, show auto-fill dialog
-    if (metadataEntries.length > 0) {
-      const prevEntry = metadataEntries[metadataEntries.length - 1];
-      setLastEntryIndex(metadataEntries.length - 1);
-      
-      // Prepare auto-fill options
-      const initialOptions = {
-        competitionName: !!prevEntry.competitionName,
-        organizer: !!prevEntry.organizer,
-        officialWeb: !!prevEntry.officialWeb,
-        award: !!prevEntry.award
-      };
-      
-      setAutoFillOptions(initialOptions);
-      setShowAutoFillDialog(true);
-    } else {
-      // If it's the first entry, just add a new blank entry
-      setMetadataEntries([...metadataEntries, {
-        name: 'CVV token',
-        description: '',
-        competitionName: '',
-        organizer: '',
-        officialWeb: '',
-        award: '',
-        honoree: '',
-        file: null,
-        errors: {}
-      }]);
-    }
+  const addMetadataEntry = (entry, index) => {
+    const newEntries = [
+      ...metadataEntries.slice(0, index + 1),
+      entry,
+      ...metadataEntries.slice(index + 1),
+    ];
+    setMetadataEntries(newEntries);
   };
+
 
   // Remove a metadata entry
   const removeMetadataEntry = (index) => {
@@ -318,14 +296,22 @@ function NFTUploadForm() {
                 >
                   Entry {index + 1}
                 </p>
-                {metadataEntries.length > 1 && (
+                <div>
                   <button 
-                    onClick={() => removeMetadataEntry(index)} 
-                    className="remove-entry-button"
-                  >
-                    Remove
-                  </button>
-                )}
+                      onClick={() => addMetadataEntry(entry, index)}
+                      className="duplicate-entry-button mr-2"
+                    >
+                      Duplicate
+                    </button>
+                  {metadataEntries.length > 1 && (
+                    <button 
+                      onClick={() => removeMetadataEntry(index)} 
+                      className="remove-entry-button"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className={`futuristic-input-group ${entry.errors.competitionName ? 'error' : ''}`}>
@@ -434,7 +420,7 @@ function NFTUploadForm() {
           justifyContent: 'space-between',
           padding: '20px'
       }}>
-        <button 
+        {/* <button 
           type="button" 
           onClick={addMetadataEntry}
           className="button"
@@ -454,7 +440,7 @@ function NFTUploadForm() {
           >
             Add Another Entry
           </p>
-        </button>
+        </button> */}
         <button 
           type="submit" 
           onClick={handleConnectWallet} 

@@ -303,6 +303,14 @@ label {
   display: block;
 }
 
+.duplicate-entry-button {
+  background-color: #3672f4;
+  color: white;
+  font-size: 0.8em;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
 .remove-entry-button {
   background-color: #f44336;
   color: white;
