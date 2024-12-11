@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ethers } from 'ethers';
 import { abi } from './abi';
-import Card from './Card';
 import OverflowCard from './OverflowCard';
 import { FaTimes } from 'react-icons/fa';
 import { useSDK } from "@metamask/sdk-react";

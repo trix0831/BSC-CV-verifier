@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './css/YourToken.css';
 import { ethers } from 'ethers';
 import { abi } from './abi';
-import Card from './Card';
 import { IoFilter } from "react-icons/io5";
 import MetadataFilter from './MetadataFilter';
 import OverflowCard from './OverflowCard';
@@ -121,7 +120,7 @@ const YourToken = () => {
             issuer_address={nft.sender}
             official_web={nft.metadata.official_web}
             organizer={nft.metadata.organizer}
-            warning={nft.owner !== nft.metadata.issuer_address}
+            warning={nft.owner.toLowerCase() !== nft.metadata._address.toLowerCase()}
             owner={nft.owner}
           ></OverflowCard>
         ))
