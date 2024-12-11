@@ -71,6 +71,23 @@
   transform: scaleX(1);
 }
 
+.button:disabled {
+  cursor: not-allowed;
+  /* 如果原本有背景變化，將它保持固定，不要讓其跳動 */
+  background: #3d3a4e;
+  border-color: #999; /* 可改為略淡的顏色，表示不可用 */
+}
+
+.button:disabled::before {
+  transform: none !important;
+  background: none; /* 或保持與 .button 相同底色, 如 #3d3a4e */
+}
+
+.button:disabled:hover::before {
+  transform: none; 
+}
+
+
 .wallet-info {
   border: 2px solid #6EACDA;
   border-radius: 1.5rem;

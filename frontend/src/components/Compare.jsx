@@ -12,7 +12,7 @@ import AvaxIcon from './svgs/Avax';
 import BNBIcon from './svgs/BNB';
 
 const ChainNameToObject = {
-  "BSC": getChainInfo(96, false),
+  "BSC": getChainInfo(56, false),
   "AVAX": getChainInfo(43114, false),
   "BSCT": getChainInfo(97, false),
   "FUJI": getChainInfo(43113, false),

@@ -15,7 +15,7 @@ const Chain = {
         rpc_url: process.env.REACT_APP_BSCT_URL,
         name: "BSCT"
     },
-    96:{
+    56:{
         address: process.env.REACT_APP_BSC_CONTRACT_ADDRESS,
         rpc_url: process.env.REACT_APP_BSC_URL,
         name: "BSC"

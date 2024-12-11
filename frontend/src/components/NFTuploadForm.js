@@ -615,7 +615,7 @@ function NFTUploadForm() {
             </div>
             <div className="dialog-actions">
               <button onClick={() => handleDialogClose(true)} 
-                className="button"
+                className="button" disabled={![56, 97, 43113, 43114].includes(parseInt(chainId, 16))}
               >
                 <p
                 style={{
@@ -623,7 +623,7 @@ function NFTUploadForm() {
                   zIndex: 1,
                 }}
                 >
-                 Correct, upload 
+                  {[56, 97, 43113, 43114].includes(parseInt(chainId, 16))?"Correct, upload":"Unsupport chain"} 
                 </p>
               </button>
               <button 
