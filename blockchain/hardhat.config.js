@@ -18,5 +18,10 @@ module.exports = {
       chainId: 43113,
       accounts: ["12f9b9c5d505c419f3d313a5f47000c1d4dd1f7660712a2c47adac2d1f20f42f"], // 用你的 MetaMask 私鑰代替，請注意安全
     },
+    ava: {
+      url: 'https://api.avax.network/ext/bc/C/rpc',
+      chainId: 43114,
+      accounts: ["12f9b9c5d505c419f3d313a5f47000c1d4dd1f7660712a2c47adac2d1f20f42f"], // 用你的 MetaMask 私鑰代替，請注意安全
+    },
   },
 };
