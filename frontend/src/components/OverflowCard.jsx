@@ -6,7 +6,6 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Divider from '@mui/joy/Divider';
 import Typography from '@mui/joy/Typography';
 import { IoMdLink } from "react-icons/io";
-import Tooltip from "@mui/joy/Tooltip";
 import IconButton from '@mui/material/IconButton';
 import { BsCopy } from "react-icons/bs";
 import Button from '@mui/material/Button';
@@ -17,6 +16,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import './css/OverflowCard.css';
+import { IoIosWarning } from "react-icons/io";
+import Tooltip from '@mui/material/Tooltip';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -67,9 +68,13 @@ export default function OverflowCard({
     <>
     <Card 
       className="main"
-      sx={{ width: 240, paddingBottom:0 }}
+      sx={{ width: 240, paddingBottom:0, paddingTop:0 }}
       onClick={()=>setPage(!page)}
     >
+      <Tooltip title="Owner and honoree differ—this NFT may no longer represent the original award recipient." placement="right">
+      {warning? <div className="absolute left-3 top-3 p-1 bg-black rounded-lg z-10">
+        <IoIosWarning className="text-yellow-400 text-2xl"/></div>:<></>}
+      </Tooltip>
       <CardOverflow>
         <AspectRatio ratio="2">
           <img
