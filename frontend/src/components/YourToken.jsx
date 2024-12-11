@@ -74,10 +74,18 @@ const YourToken = () => {
 
   return (
     <div 
-      className="homepage flex-col items-center w-full py-8"
+      className="homepage flex-col items-center w-full"
       
     >
-      <div className='title  text-3xl my-4 mb-4 '>Verified Token Page</div>
+      <header className="header" style={{ textAlign: 'center' }}>
+        <p className="title">
+          NFT Gallery
+        </p>
+        <p className="subtitle">
+        Browse all CVV NFTs in our gallery, equipped with advanced filters to search by honoree, issuer,and more. <br/>
+        Easily discover and verify the achievements that define top talent.
+        </p>
+      </header>
 <div className='flex items-center gap-8'>
 <FormControl variant="standard" sx={{ m: 1, minWidth: 200, "& .MuiInputLabel-root": {
       color: "white" 

@@ -275,11 +275,11 @@ function NFTUploadForm() {
     >
       <header className="header" style={{ textAlign: 'center' }}>
         <p className="title">
-          Upload Your NFT
+          Issue NFTs
         </p>
         <p className="subtitle">
-          After filling Metadata, connect to your MetaMask wallet and upload.<br/>
-          Upload your your CV NFT have never been easier.
+          After filling Metadata, connect to your MetaMask wallet and issue the award as CVV NFT.<br/>
+          Enhance the credibility of your events by providing verifiable, tamper-proof digital accolades to recipients.
         </p>
       </header>
 

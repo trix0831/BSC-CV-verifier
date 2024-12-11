@@ -123,11 +123,17 @@ const Compare = () => {
         width: '100%',
       }}
     >
-      <div style={{ fontSize: '1.875rem', margin: '1rem 0', color: '#c9c9c9'}}>
-        Compare NFTs by Owner
-      </div>
+      <header className="header" style={{ textAlign: 'center' }}>
+        <p className="title">
+          Compare NFTs
+        </p>
+        <p className="subtitle">
+        Enter multiple candidate wallet addresses to display their CVV NFTs side-by-side. <br/>
+        Quickly identify top talent by reviewing their verified achievements.
+        </p>
+      </header>
       <div className='flex items-center gap-8'>
-<FormControl variant="standard" sx={{ m: 1, minWidth: 200, "& .MuiInputLabel-root": {
+<FormControl variant="standard" sx={{ m: 0, minWidth: 200, "& .MuiInputLabel-root": {
       color: "white" 
     },
     "& .MuiInput-underline:before": {
