@@ -134,7 +134,7 @@ export default function OverflowCard({
           <div>Honoree: {truncateAddress(honoree_address)}
                 <IconButton
                     color="primary"
-                    onClick={(event)=>handleCopy(event, honoree)}
+                    onClick={(event)=>handleCopy(event, honoree_address)}
                     aria-label="Copy wallet address"
                     sx={{width:28, height:20, ml:1}}
                     >
