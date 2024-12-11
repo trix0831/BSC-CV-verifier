@@ -20,15 +20,15 @@ function HomePage() {
   return (
     <div className="homepage">
       <header className="header">
-        <h1 className="title">CV Verifier</h1>
-        <p className="subtitle">Experience the Future of Decentralization.</p>
+        <h1 className="title">Blockfolio</h1>
+        <p className="subtitle">Say goodbye to manual checks and uncertain credentials.</p>
       </header>
 
-      <div className="card-container">
+      <div className="card-container pb-6">
         <div className="card" onClick={NavUpload} style={{ cursor: 'pointer' }}>
           <div className="card-content">
             <UploadCV/>
-            <p className="card-title">Add Your First CV NFT</p>
+            <p className="card-title">Issue Your First CVV NFT</p>
             <p className="card-para">Just a single click to be your own verifier</p>
           </div>
         </div>
@@ -62,14 +62,13 @@ function HomePage() {
             }}
             // className="zoom-effect" // Add a class for the zoom effect
           >
-            CV Verifier is a decentralized application that allows you to create your own CV NFTs. 
-            Add your CV to the blockchain.
-            This way, you can prove the authenticity of your CV and make it tamper-proof.
+            Welcome to the Blockfolio, the platform that can seamlessly mint and issue awards as CVV NFTs for unparalleled trust and authenticity. <br/> <br/> 
+            Here, HR professionals can quickly verify and compare candidates’ achievements from a single, transparent source.
           </p>
         </div>
 
         <div
-          className="grid grid-cols-1"
+          className="grid grid-cols-1 gap-2"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -79,15 +78,15 @@ function HomePage() {
           }}
         >
           <button className="button w-64" onClick={NavUpload}>
-            <span className="button-content">Upload</span>
+            <span className="button-content">Issue CVV NFT</span>
           </button>
 
           <button className="button mt-2 w-64" onClick={NavYourToken}>
-            <span className="button-content">View Your CV</span>
+            <span className="button-content">CVV NFTs Gallery</span>
           </button>
 
           <button className="button mt-2 w-64" onClick={NavCompare}>
-            <span className="button-content">Compare</span>
+            <span className="button-content">Compare NFTs</span>
           </button>
         </div>
       </div>
