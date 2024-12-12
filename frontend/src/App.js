@@ -11,14 +11,21 @@ import NavBar from "./components/NavBar";
 function App() {
   return (
     <Router>
-       <NavBar />
-      <Routes>
-        <Route path="/" element={ <HomePage/>} />
-        <Route path="/gallery" element={<YourToken />} />
-        <Route path="/issue" element={<NFTUploadForm />} />
-        <Route path="/compare" element={<Compare />} />
-        <Route path="*" element={<h1 style={{color : "white"}}>Not Found</h1>} />
-      </Routes>
+      <NavBar
+        style={{
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 1000,
+        }}
+      />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/gallery" element={<YourToken />} />
+          <Route path="/issue" element={<NFTUploadForm />} />
+          <Route path="/compare" element={<Compare />} />
+          <Route path="*" element={<h1 style={{ color: "white" }}>Not Found</h1>} />
+        </Routes>
     </Router>
   );
 }

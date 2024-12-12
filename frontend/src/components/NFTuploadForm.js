@@ -704,11 +704,20 @@ function NFTUploadForm() {
           >
             <p
               className='upload-status'
-              style={{
-              }}
             >
               {uploadStatus}
             </p>
+
+            <div class="container">
+              <div class="loader">
+                <div class="crystal"></div>
+                <div class="crystal"></div>
+                <div class="crystal"></div>
+                <div class="crystal"></div>
+                <div class="crystal"></div>
+                <div class="crystal"></div>
+              </div>
+            </div>
             
             <button
               className="button"

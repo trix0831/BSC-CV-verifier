@@ -311,7 +311,17 @@ const Compare = () => {
                     />
                   </div>
                 ))}
-              </div>):( <p>No NFTs found for the selected address.</p>)}
+              </div>):( 
+                <p
+                  style={{
+                    color: '#c9c9c9',
+                    textAlign: 'center',
+                    margin: '0 auto',
+                  }}
+                >
+                  No NFTs found for the selected address.
+                </p>
+              )}
             </div>
           ))}
         </div>

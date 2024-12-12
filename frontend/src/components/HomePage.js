@@ -91,8 +91,23 @@ function HomePage() {
         </div>
       </div>
 
+      <div
+        style={{
+          height: "4rem",
+        }}  
+      >
+        
+      </div>
 
-      <footer className="footer" style={{ position: 'fixed', bottom: 0, width: '100%' }}>
+      <footer 
+        className="footer" 
+        style={{ 
+          position: 'fixed', 
+          bottom: 0, 
+          width: '100%',
+          height: '3.2rem',
+        }}
+      >
         <p>trix hahaha FOR Taipei blockchain week</p>
       </footer>
     </div>

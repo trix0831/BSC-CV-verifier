@@ -2,7 +2,10 @@ import { Link } from "react-router-dom";
 
 function NavBar() {
   return (
-    <nav className="flex gap-8 px-6 py-3 text-sm font-semibold" style={{ background: "#333" }}>
+    <nav 
+      className="flex gap-8 px-6 py-3 text-sm font-semibold" 
+      style={{ background: "#333", position: "fixed", top: 0, width: "100%", zIndex: 1000 }}
+    >
       <Link to="/" style={{ color: "white", textDecoration: "none" }}>Home</Link>
       <Link to="/gallery" style={{ color: "white", textDecoration: "none" }}>NFT Gallery</Link>
       <Link to="/issue" style={{ color: "white", textDecoration: "none" }}>Issue NFT</Link>

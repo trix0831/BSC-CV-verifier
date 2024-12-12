@@ -10,9 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import { BsCopy } from "react-icons/bs";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import './css/OverflowCard.css';
@@ -66,134 +64,182 @@ export default function OverflowCard({
 
   return (
     <>
-    <Card 
-      className="main"
-      sx={{ width: 240, height: 240,paddingBottom:0, paddingTop:0 }}
-      onClick={()=>setPage(!page)}
-    >
-      <Tooltip title="Owner and honoree differ—this NFT may no longer represent the original award recipient." placement="right">
-      {warning? <div className="absolute left-3 top-3 p-1 bg-black rounded-lg z-10">
-        <IoIosWarning className="text-yellow-400 text-2xl"/></div>:<></>}
-      </Tooltip>
-      <CardOverflow>
-        <AspectRatio ratio="2">
+      <Card 
+        className="main"
+        sx={{ 
+          width: 240, 
+          height: 240,
+          paddingBottom: 0, 
+          paddingTop: 0,
+          backgroundColor: '#3d3a4e', // Set card background to gray
+          border: '1.5px solid #6EACDA', // Add light blue border
+        }}
+        onClick={() => setPage(!page)}
+      >
+        {warning ? (
+          <div 
+           className="absolute left-3 top-3 p-1 bg-red-700 rounded-lg z-10 opacity-75 flashing"
+          >
+            <IoIosWarning className="text-yellow-400 text-2xl"/>
+          </div>
+        ) : null}
+
+        <CardOverflow>
+          <div 
+            className="image-container"
+            
+          >
+            <img
+              src={image}
+              loading="lazy"
+              alt=""
+            />
+          </div>
+        </CardOverflow>
+
+        <div>
+          <p
+            className='competition-name'
+          >
+            {competition_name}
+          </p>
+          <p
+            className='award'
+          >
+            {award}
+          </p>
+        </div>
+        
+        {/* <Divider/> */}
+
+        <button 
+          onClick={handleClickOpen} 
+          className='open-detail-button'
+          style={{
+            position: 'absolute',
+            bottom: 15,
+            borderRadius: '8px',
+            transition: 'background-color 0.3s ease',
+            padding: '2px 4px',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(114, 113, 120, 0.5)'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+        >
+          <p
+            style={{
+              margin: "0 auto",
+            }}
+          >
+            View Details
+          </p>
+        </button>
+      </Card>
+
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+        PaperProps={{
+          style: {
+            backgroundColor: '#3d3a4e', // Set dialog background to gray
+            color: '#c9c9c9', // Set text color
+            borderRadius: '8px', // Add rounded corners
+            border: '1.5px solid #6EACDA', // Add light blue border
+          },
+        }}
+        
+      >
+        <DialogTitle
+          className="text-center font-semibold"
+          style={{ color: '#c9c9c9' }} // Set text color
+        >
+          <div className="text-center text-xl font-semibold">{competition_name}</div>
+          <div className="text-center text-base">Honoree: {honoree}</div>
+        </DialogTitle>
+        <Divider />
+
+        <DialogContent 
+          className="flex gap-4 py-4"
+          style={{ color: '#c9c9c9' }} // Set text color
+        >
           <img
             src={image}
-            srcSet={image}
-            loading="lazy"
-            alt=""
+            alt="Competition"
+            className="w-52 h-56 object-cover rounded-md"
           />
-        </AspectRatio>
-      </CardOverflow>
-        <CardContent>
-        <Typography level="title-md">{competition_name}</Typography>
-        <Typography level="body-sm">{award}</Typography>
-      </CardContent>
-
-      <CardOverflow 
-        variant="soft" 
-          className="card-bottom "
-      >
-        <Divider inset="context" />
-        <CardContent 
-          orientation="horizontal" 
-          className='flex items-center text-xs'
-        >
-            <button onClick={handleClickOpen} className='text-[12px] text-sky-700'>
-              Open Detail
-            </button>
-        </CardContent>
-      </CardOverflow>
-
-    </Card>
-
-
-    <Dialog
-          open={open}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleClose}
-          aria-describedby="alert-dialog-slide-description"
-        >
-      {/* 第一块：Competition Name */}
-      <DialogTitle className="text-center font-semibold">
-        <div className="text-center text-xl font-semibold"> {competition_name}</div>
-        <div className="text-center text-base "> Honoree: {honoree}</div>
-      </DialogTitle>
-      <Divider />
-
-      {/* 第二块：左图右文字 */}
-      <DialogContent className="flex gap-4 py-4">
-        <img
-          src={image}
-          alt="Competition"
-          className="w-52 h-64 object-cover rounded-md"
-        />
-        <div className="flex flex-col justify-center w-64 items-center">
+          
+          <div className="flex flex-col justify-center w-64 items-center">
             <div className="flex flex-col justify-center text-sm gap-4">
-          <div>Honoree: {truncateAddress(honoree_address)}
+              <div>
+                Honoree: {truncateAddress(honoree_address)}
                 <IconButton
-                    color="primary"
-                    onClick={(event)=>handleCopy(event, honoree_address)}
-                    aria-label="Copy wallet address"
-                    sx={{width:28, height:20, ml:1}}
-                    >
-                    <BsCopy/>
-                </IconButton>          
-          </div>
-          <div>Owned by: {truncateAddress(owner)}                     
-                <IconButton
-                    color="primary"
-                    onClick={(event)=>handleCopy(event, owner)}
-                    aria-label="Copy wallet address"
-                    // size='small'
-                    sx={{width:28, height:20, ml:1}}
-                    >
-                    <BsCopy/>
-                </IconButton>
-            </div>
-          <div>Issuer: {truncateAddress(issuer_address)}
-            <IconButton
-                color="primary"
-                onClick={(event)=>handleCopy(event, issuer_address)}
-                aria-label="Copy wallet address"
-                sx={{width:28, height:20, ml:1}}
+                  color="primary"
+                  onClick={(event) => handleCopy(event, honoree_address)}
+                  aria-label="Copy wallet address"
+                  sx={{ width: 28, height: 20, ml: 1 }}
                 >
-                <BsCopy/>
-            </IconButton>
+                  <BsCopy />
+                </IconButton>          
+              </div>
+              <div>
+                Owned by: {truncateAddress(owner)}                     
+                <IconButton
+                  color="primary"
+                  onClick={(event) => handleCopy(event, owner)}
+                  aria-label="Copy wallet address"
+                  sx={{ width: 28, height: 20, ml: 1 }}
+                >
+                  <BsCopy />
+                </IconButton>
+              </div>
+              <div>
+                Issuer: {truncateAddress(issuer_address)}
+                <IconButton
+                  color="primary"
+                  onClick={(event) => handleCopy(event, issuer_address)}
+                  aria-label="Copy wallet address"
+                  sx={{ width: 28, height: 20, ml: 1 }}
+                >
+                  <BsCopy />
+                </IconButton>
+              </div>
+              <div>Organizer: {organizer}</div>
+              <div>Award: {award}</div>
+              <div className='flex items-center gap-x-2'>
+                Official Website: 
+                <a
+                  href={official_web}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  <IoMdLink />    
+                </a>
+              </div>
+            </div>
           </div>
-          <div>Organizer: {organizer}</div>
-            <div>Award: {award}</div>
-            <div className='flex items-center gap-x-2'>
-            Official Website:{" "}
-            <a
-                href={official_web}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-            >
-                <IoMdLink />    
-               </a>
-            </div>
-            </div>
-        </div>
-      </DialogContent>
-      <Divider />
-
-      {/* 第三块：滚动的描述文字 */}
-      <DialogContent className="max-h-80 min-h-40 overflow-y-auto">
-        <div>
-            Description:
-        </div>
-        <p className="text-sm">{description}</p>
-      </DialogContent>
-      <Divider />
-      <DialogContent className='flex justify-end py-0'>
-        <Button onClick={handleClose} className="text-blue-500">
-          Close
-        </Button>
         </DialogContent>
-        </Dialog>         
-        </>
+        <Divider />
+
+        <DialogContent 
+          className="max-h-80 min-h-40 overflow-y-auto"
+          style={{ color: '#c9c9c9' }} // Set text color  
+        >
+          <div>Description:</div>
+          <p className="text-sm">{description}</p>
+        </DialogContent>
+        <Divider />
+        <DialogContent
+          className="flex justify-end py-0"
+          style={{ color: '#c9c9c9' }} // Set text color
+        >
+          <Button onClick={handleClose} className="text-blue-500">
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>         
+    </>
   );
 }
