@@ -305,6 +305,7 @@ const Compare = () => {
                         organizer={nft.metadata.organizer}
                         warning={nft.owner.toLowerCase() !== nft.metadata._address.toLowerCase()}
                         owner={nft.owner}
+                        hover_scale={false}
                       />
                     </div>
                   ))}

@@ -34,6 +34,7 @@ export default function OverflowCard({
     organizer,
     warning,
     owner,
+    hover_scale=true,
 }) {
   const [page, setPage] = useState(true);
   const [open, setOpen] = React.useState(false);
@@ -75,19 +76,20 @@ export default function OverflowCard({
           border: '1.5px solid #6EACDA', // Add light blue border
           transition: 'transform 0.3s ease', // Add this line
           '&:hover': {
-            transform: 'scale(1.05)',       // Add this line
+            transform: hover_scale?'scale(1.05)':"",       // Add this line
           },
         }}
         onClick={() => setPage(!page)}
       >
-        {warning ? (
-          <div 
-           className="absolute left-3 top-3 p-1 bg-red-700 rounded-lg z-10 opacity-75 flashing"
-          >
-            <IoIosWarning className="text-yellow-400 text-2xl"/>
-          </div>
-        ) : null}
-
+        <Tooltip title="Owner and honoree differ—this NFT may no longer represent the original award recipient." placement="right">
+          {warning ? (
+            <div 
+            className="absolute left-3 top-3 p-1 bg-red-700 rounded-lg z-10 opacity-75 flashing"
+            >
+              <IoIosWarning className="text-yellow-400 text-2xl"/>
+            </div>
+          ) : null}
+        </Tooltip>
         <CardOverflow>
           <div 
             className="image-container"
@@ -110,10 +112,14 @@ export default function OverflowCard({
           <p
             className='award'
           >
-            {award}
+           honoree: {honoree}
+          </p>
+          <p
+            className='award'
+          >
+            award: {award}
           </p>
         </div>
-        
         {/* <Divider/> */}
 
         <button 
