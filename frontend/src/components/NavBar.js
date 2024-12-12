@@ -33,6 +33,17 @@ function NavBar() {
       >
         Compare
       </Link>
+
+      <div 
+        class="logo"
+        style={{
+          height: "20px",
+          marginLeft: "auto",
+          marginRight: "20px",
+        }}
+      >
+        <p>Blockfolio</p>
+      </div>
     </nav>
   );
 }
