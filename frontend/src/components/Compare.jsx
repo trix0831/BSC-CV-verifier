@@ -11,6 +11,8 @@ import Select from '@mui/material/Select';
 import AvaxIcon from './svgs/Avax';
 import BNBIcon from './svgs/BNB';
 import './css/fadeIn.css'; // Import the fade-in animation CSS
+import IconButton from '@mui/material/IconButton';
+import { BsCopy } from "react-icons/bs";
 
 const ChainNameToObject = {
   "BSC": getChainInfo(56, false),
@@ -33,7 +35,7 @@ const Compare = () => {
 
   const truncateAddress = (addr) => {
     if (!addr) return "";
-    return `${addr.slice(0, 7)}...${addr.slice(-5)}`;
+    return `${addr.slice(0, 9)}.....${addr.slice(-7)}`;
   };
 
   useEffect(() => {
@@ -103,6 +105,17 @@ const Compare = () => {
       setSelectedCandidate(null);
     } else {
       setSelectedCandidate(address);
+    }
+  };
+
+  const handleCopy = (event, address) => {
+    event.stopPropagation(); 
+    if (document.hasFocus()) {
+      navigator.clipboard.writeText(address)
+        .then(() => alert("Copied to clipboard!"))
+        .catch((err) => console.error("Failed to copy text:", err));
+    } else {
+      alert("Please ensure the page is focused before copying.");
     }
   };
 
@@ -249,6 +262,14 @@ const Compare = () => {
                     <span style={{ fontSize: '0.875rem', color: '#e7dfdd' }}>
                       {truncateAddress(item.address)}
                     </span>
+                    <IconButton
+                      color="primary"
+                      onClick={(event) => handleCopy(event, item.address)}
+                      aria-label="Copy wallet address"
+                      sx={{ width: 28, height: 20, ml: 1 }}
+                    >
+                      <BsCopy />
+                    </IconButton> 
                   </div>
                   <button
                     onClick={(e) => {
