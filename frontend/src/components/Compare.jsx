@@ -10,20 +10,21 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import AvaxIcon from './svgs/Avax';
 import BNBIcon from './svgs/BNB';
+import './css/fadeIn.css'; // Import the fade-in animation CSS
 
 const ChainNameToObject = {
   "BSC": getChainInfo(56, false),
   "AVAX": getChainInfo(43114, false),
   "BSCT": getChainInfo(97, false),
   "FUJI": getChainInfo(43113, false),
-}
+};
 
 const Compare = () => {
   const [nftData, setNftData] = useState([]);
   const [compareAddresses, setCompareAddresses] = useState([]);
   const [addressInput, setAddressInput] = useState('');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [loaded, setLoaded] = useState(false); // New state to track if data is loaded
+  const [loaded, setLoaded] = useState(false);
   const [chain, setChain] = useState('BSC');
 
   const handleChange = (event) => {
@@ -40,7 +41,7 @@ const Compare = () => {
       try {
         const contractAddress = ChainNameToObject[chain].address;
         const provider = new ethers.JsonRpcProvider(ChainNameToObject[chain].rpc_url);
-        const contractABI = abi
+        const contractABI = abi;
         const contract = new ethers.Contract(contractAddress, contractABI, provider);
         const tokenCount = await contract.tokenCount();
         const tokens = [];
@@ -53,7 +54,6 @@ const Compare = () => {
           tokens.push({ tokenId: tokenId.toString(), metadata, sender, owner });
         }
 
-        console.log('Token details:', tokens);
         setNftData(tokens);
       } catch (error) {
         console.error('Error fetching NFTs:', error);
@@ -63,18 +63,16 @@ const Compare = () => {
     fetchAllNFTs();
   }, [chain]);
 
-  // Load saved addresses and nicknames from localStorage on mount
   useEffect(() => {
     const savedAddresses = JSON.parse(localStorage.getItem('compareAddresses'));
     if (savedAddresses) {
       setCompareAddresses(savedAddresses);
     }
-    setLoaded(true); // Indicate that loading is complete
+    setLoaded(true);
   }, []);
 
-  // Save addresses and nicknames to localStorage whenever compareAddresses changes
   useEffect(() => {
-    if (loaded) { // Only save if data has been loaded
+    if (loaded) {
       localStorage.setItem('compareAddresses', JSON.stringify(compareAddresses));
     }
   }, [compareAddresses, loaded]);
@@ -108,9 +106,10 @@ const Compare = () => {
     }
   };
 
-  const filteredNfts = (owner_address) => nftData.filter(
-    (nft) => owner_address && nft.owner.toLowerCase() === owner_address.toLowerCase()
-  );
+  const filteredNfts = (owner_address) =>
+    nftData.filter(
+      (nft) => owner_address && nft.owner.toLowerCase() === owner_address.toLowerCase()
+    );
 
   const handleNicknameChange = (index, nickname) => {
     const updatedAddresses = [...compareAddresses];
@@ -120,6 +119,7 @@ const Compare = () => {
 
   return (
     <div
+      className="compare-page animate-fade-in-up delay-1"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -127,89 +127,88 @@ const Compare = () => {
         width: '100%',
       }}
     >
-      <header className="header" style={{ textAlign: 'center' }}>
-        <p className="title">
-          Compare NFTs
-        </p>
+      <header className="header animate-fade-in-up delay-2" style={{ textAlign: 'center' }}>
+        <p className="title">Compare NFTs</p>
         <p className="subtitle">
-        Enter multiple candidate wallet addresses to display their CVV NFTs side-by-side. <br/>
-        Quickly identify top talent by reviewing their verified achievements.
+          Enter multiple candidate wallet addresses to display their CVV NFTs side-by-side.
+          <br /> Quickly identify top talent by reviewing their verified achievements.
         </p>
       </header>
-      <div className='flex items-center gap-8'>
-        <FormControl variant="standard" sx={{ m: 0, minWidth: 200, "& .MuiInputLabel-root": {
-            color: "white" 
-          },
-          "& .MuiInput-underline:before": {
-            borderBottomColor: "white"
-          },
-          "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-            borderBottomColor: "white"
-          },
-          "& .MuiInput-underline:after": {
-            borderBottomColor: "white" 
-          }}} >
-              <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">Chain</InputLabel>
-              <Select
-              sx={{color: "white"}} 
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={chain}
-                onChange={handleChange}
-                label="Chain"
-              >
-                <MenuItem value="BSC">BSC</MenuItem>
-                <MenuItem value="AVAX">AVAX</MenuItem>
-                <MenuItem value="BSCT">BSC-Test</MenuItem>
-                <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
-              </Select>
-            
-          </FormControl>  
-            {['BSC', 'BSCT'].includes(chain)?<BNBIcon size={24} color="#F0B90B" />:<AvaxIcon size={24} color="#ff0000" />}
+
+      <div className="flex items-center gap-8 animate-fade-in-up delay-3">
+        <FormControl
+          variant="standard"
+          sx={{
+            m: 0,
+            minWidth: 200,
+            "& .MuiInputLabel-root": {
+              color: "white",
+            },
+            "& .MuiInput-underline:before": {
+              borderBottomColor: "white",
+            },
+            "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+              borderBottomColor: "white",
+            },
+            "& .MuiInput-underline:after": {
+              borderBottomColor: "white",
+            },
+          }}
+        >
+          <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">
+            Chain
+          </InputLabel>
+          <Select
+            sx={{ color: "white" }}
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={chain}
+            onChange={handleChange}
+            label="Chain"
+          >
+            <MenuItem value="BSC">BSC</MenuItem>
+            <MenuItem value="AVAX">AVAX</MenuItem>
+            <MenuItem value="BSCT">BSC-Test</MenuItem>
+            <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
+          </Select>
+        </FormControl>
+        {['BSC', 'BSCT'].includes(chain) ? (
+          <BNBIcon size={24} color="#F0B90B" />
+        ) : (
+          <AvaxIcon size={24} color="#ff0000" />
+        )}
       </div>
+
       <div
+        className="address-input-container animate-fade-in-up delay-4"
         style={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'center',
           gap: '1rem',
           margin: '1rem 0',
+          width: "100%",
         }}
       >
-        <div className="w-screen flex justify-center gap-4 mt-4 mb-8">
-          <input
-            type="text"
-            value={addressInput}
-            onChange={(e) => setAddressInput(e.target.value)}
-            className="input-underline w-1/3"
-            placeholder="Enter address to compare"
-            style={{ color: 'white' }}
-          />
-          <button
-            onClick={handleAddAddress}
-            className="button"
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#222126'} // Change background on hover
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#39383f'}    // Reset background on hover out
-          >
-            <p
-              style={{
-                position: "relative",
-                zIndex : 1
-              }}
-            >
-              Add Address
-            </p>
-          </button>
-
-        </div>
+        <input
+          type="text"
+          value={addressInput}
+          onChange={(e) => setAddressInput(e.target.value)}
+          className="input-underline w-1/3"
+          placeholder="Enter address to compare"
+          style={{ color: 'white' }}
+        />
+        <button
+          onClick={handleAddAddress}
+          className="button"
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#222126')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#39383f')}
+        >
+          <p style={{ position: "relative", zIndex: 1 }}>Add Address</p>
+        </button>
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          width: '100%',
-          // height: 'calc(100vh - 200px)',
-        }}
-      >
+      <div className="nft-display animate-fade-in-up delay-5" style={{ display: 'flex', width: '100%' }}>
         <div
           style={{
             width: '25%',
@@ -222,57 +221,53 @@ const Compare = () => {
         >
           {compareAddresses.length > 0 ? (
             compareAddresses.map((item, index) => (
-              <div style={{height: '18rem'}}>
-              <div
-                key={index}
-                style={{
-                  padding: '1rem',
-                  marginBottom: '1rem',
-                  borderRadius: '0.5rem',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  backgroundColor:
-                    selectedCandidate === item.address ? '#222126' : '#39383f',
-                  transition: 'background-color 0.3s ease',
-                  border: '1.5px solid #6EACDA', // Added light blue border
-                  position: 'relative',
-                  zIndex: "0",
-                }}
-                onClick={() => handleSelectCandidate(item.address)}
-              >
-                <div style={{ flexGrow: 1 }}>
-                  <NicknameInput
-                    nickname={item.nickname}
-                    onNicknameChange={(nickname) =>
-                      handleNicknameChange(index, nickname)
-                    }
-                  />
-                  <span style={{ fontSize: '0.875rem', color: '#e7dfdd' }}>
-                    {truncateAddress(item.address)}
-                  </span>
-                </div>
-                <button
-                className="absolute top-4 right-4"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveAddress(index);
-                  }}
+              <div key={index} style={{ height: '18rem' }}>
+                <div
                   style={{
-                    color: '#f56565',
-                    background: 'none',
+                    padding: '1rem',
+                    marginBottom: '1rem',
+                    borderRadius: '0.5rem',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                     cursor: 'pointer',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor:
+                      selectedCandidate === item.address ? '#222126' : '#39383f',
+                    transition: 'background-color 0.3s ease',
+                    border: '1.5px solid #6EACDA',
                   }}
+                  onClick={() => handleSelectCandidate(item.address)}
                 >
-                  <FaTimes/>
-                </button>
-              </div>
+                  <div style={{ flexGrow: 1 }}>
+                    <NicknameInput
+                      nickname={item.nickname}
+                      onNicknameChange={(nickname) =>
+                        handleNicknameChange(index, nickname)
+                      }
+                    />
+                    <span style={{ fontSize: '0.875rem', color: '#e7dfdd' }}>
+                      {truncateAddress(item.address)}
+                    </span>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveAddress(index);
+                    }}
+                    style={{
+                      color: '#f56565',
+                      background: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
               </div>
             ))
           ) : (
-            <p style={{color: '#c9c9c9'}}>No addresses selected.</p>
+            <p style={{ color: '#c9c9c9' }}>No addresses selected.</p>
           )}
         </div>
 
@@ -286,33 +281,35 @@ const Compare = () => {
           }}
         >
           {compareAddresses.map((item, index) => (
-            <div style={{height: '18rem'}} className="overflow-x-auto">
-              {filteredNfts(item.address).length > 0 ? (<div className="flex space-x-8 h-full"> 
-                {filteredNfts(item.address).map((nft) => (
-                  <div
-                    key={nft.tokenId}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <OverflowCard
-                      name={nft.metadata.name}
-                      competition_name={nft.metadata.competition_name}
-                      award={nft.metadata.award}
-                      description={nft.metadata.description}
-                      honoree={nft.metadata.honoree}
-                      honoree_address={nft.metadata._address}
-                      image={nft.metadata.image}
-                      issuer_address={nft.sender}
-                      official_web={nft.metadata.official_web}
-                      organizer={nft.metadata.organizer}
-                      warning={nft.owner.toLowerCase() !== nft.metadata._address.toLowerCase()}
-                      owner={nft.owner}
-                    />
-                  </div>
-                ))}
-              </div>):( 
+            <div key={index} style={{ height: '18rem' }} className="overflow-x-auto">
+              {filteredNfts(item.address).length > 0 ? (
+                <div className="flex space-x-8 h-full">
+                  {filteredNfts(item.address).map((nft) => (
+                    <div
+                      key={nft.tokenId}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <OverflowCard
+                        name={nft.metadata.name}
+                        competition_name={nft.metadata.competition_name}
+                        award={nft.metadata.award}
+                        description={nft.metadata.description}
+                        honoree={nft.metadata.honoree}
+                        honoree_address={nft.metadata._address}
+                        image={nft.metadata.image}
+                        issuer_address={nft.sender}
+                        official_web={nft.metadata.official_web}
+                        organizer={nft.metadata.organizer}
+                        warning={nft.owner.toLowerCase() !== nft.metadata._address.toLowerCase()}
+                        owner={nft.owner}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
                 <p
                   style={{
                     color: '#c9c9c9',
@@ -331,7 +328,6 @@ const Compare = () => {
   );
 };
 
-// Component for editing the nickname
 const NicknameInput = ({ nickname, onNicknameChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localNickname, setLocalNickname] = useState(nickname);
@@ -365,7 +361,7 @@ const NicknameInput = ({ nickname, onNicknameChange }) => {
   ) : (
     <div
       onClick={(e) => {
-        e.stopPropagation(); // Prevent triggering the select handler
+        e.stopPropagation();
         setIsEditing(true);
       }}
       style={{ fontWeight: 'bold', marginBottom: '0.5rem', cursor: 'pointer', color: '#6EACDA' }}

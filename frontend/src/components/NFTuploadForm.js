@@ -7,6 +7,7 @@ import { useSDK } from "@metamask/sdk-react";
 import { BrowserProvider } from 'ethers';
 import MetamaskIcon from './svgs/MetamaskIcon';
 import  getChainInfo from '../chain';
+import './css/fadeIn.css';
 
 function NFTUploadForm() {
   const [metadataEntries, setMetadataEntries] = useState([{
@@ -252,39 +253,20 @@ function NFTUploadForm() {
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
     >
       <header className="header" style={{ textAlign: 'center' }}>
-        <p className="title">
+        <p className="title animate-fade-in-up delay-1">
           Issue NFTs
         </p>
-        <p className="subtitle">
+        <p className="subtitle animate-fade-in-up delay-2">
           After filling Metadata, connect to your MetaMask wallet and issue the award as CVV NFT.<br/>
           Enhance the credibility of your events by providing verifiable, tamper-proof digital accolades to recipients.
         </p>
       </header>
 
-      {/* {connected ? (
-        <div 
-          className="wallet-info"
-        >
-          <div>
-            <p>Connected chain: {parseInt(chainId, 16)}</p>
-            <p>Connected account: {account}</p>
-          </div>
-        </div>
-      ) : (
-        <p
-          style={{
-            color: 'white',
-            textAlign: 'center'
-          }}
-        >
-          Please connect your wallet to continue.
-        </p>
-      )} */}
       {connected ? (
         <div className="metadata-entries-container">
           {metadataEntries.map((entry, index) => (
             
-            <div key={index} className="metadata-entry">
+            <div key={index} className={`metadata-entry animate-fade-in-up delay-${index + 3}`}>
               <div className="entry-header">
                 <p
                   style={{
@@ -444,7 +426,7 @@ function NFTUploadForm() {
         <button 
           type="submit" 
           onClick={handleConnectWallet} 
-          className="button"
+          className="button animate-fade-in-up delay-4"
           disabled={!connected}
           style={{
             display: 'flex',
@@ -468,7 +450,7 @@ function NFTUploadForm() {
 
       {/* Connection Dialog */}
       {showConnectionDialog && (
-        <div className="confirmation-overlay">
+        <div className="confirmation-overlay animate-fade-in-up delay-1">
           <div
             className="confirmation-dialog scrollable-dialog"
             style={{ textAlign: 'center' }}
@@ -517,7 +499,7 @@ function NFTUploadForm() {
 
       {/* Confirmation Dialog */}
       {showDialog && (
-        <div className="confirmation-overlay">
+        <div className="confirmation-overlay animate-fade-in-up delay-1">
           <div className="confirmation-dialog scrollable-dialog">
             <p
               style={{
@@ -632,7 +614,7 @@ function NFTUploadForm() {
 
       {/* Auto-fill Confirmation Dialog */}
       {showAutoFillDialog && (
-        <div className="confirmation-overlay">
+        <div className="confirmation-overlay animate-fade-in-up delay-1">
           <div className="confirmation-dialog">
             <h3>Auto-fill Options</h3>
             <p>Select which fields you want to keep from the previous entry:</p>
@@ -697,7 +679,7 @@ function NFTUploadForm() {
       )}
 
       {showUploadingDialog && (
-        <div className="confirmation-overlay">
+        <div className="confirmation-overlay animate-fade-in-up delay-1">
           <div
             className="confirmation-dialog scrollable-dialog"
             style={{ textAlign: 'center'}}

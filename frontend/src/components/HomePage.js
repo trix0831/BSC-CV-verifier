@@ -6,7 +6,7 @@ function HomePage() {
   const navigate = useNavigate(); // Hook for navigation
 
   const NavUpload = () => {
-    navigate('/issue'); // Navigate to /upload
+    navigate('/issue'); // Navigate to /issue
   };
 
   const NavCompare = () => {
@@ -14,17 +14,17 @@ function HomePage() {
   }
 
   const NavYourToken = () => {
-    navigate('/gallery'); // Navigate to /yourtoken
+    navigate('/gallery'); // Navigate to /gallery
   }
 
   return (
     <div className="homepage">
-      <header className="header">
+      <header className="header animate-fade-in-up delay-1">
         <h1 className="title">Blockfolio</h1>
         <p className="subtitle">Say goodbye to manual checks and uncertain credentials.</p>
       </header>
 
-      <div className="card-container pb-6">
+      <div className="card-container pb-6 animate-fade-in-up delay-2">
         <div className="card" onClick={NavUpload} style={{ cursor: 'pointer' }}>
           <div className="card-content">
             <UploadCV/>
@@ -35,7 +35,7 @@ function HomePage() {
       </div>
 
       <div
-        className="description grid grid-cols-2"
+        className="description grid grid-cols-2 animate-fade-in-up delay-3"
         style={{
           width: "60%",
           marginLeft: "auto",
@@ -49,7 +49,6 @@ function HomePage() {
             border: "2px solid #6EACDA",
             borderRadius: "1rem",
             marginLeft: "1.8rem",
-            // marginRight: "auto",
             overflow: "hidden", // Prevent content from spilling out
           }}
         >
@@ -60,7 +59,6 @@ function HomePage() {
               margin: "1rem",
               transition: "transform 0.3s ease", // Add smooth transition
             }}
-            // className="zoom-effect" // Add a class for the zoom effect
           >
             Welcome to the Blockfolio, the platform that can seamlessly mint and issue awards as CVV NFTs for unparalleled trust and authenticity. <br/> <br/> 
             Here, HR professionals can quickly verify and compare candidates’ achievements from a single, transparent source.
@@ -68,7 +66,7 @@ function HomePage() {
         </div>
 
         <div
-          className="grid grid-cols-1 gap-2"
+          className="grid grid-cols-1 gap-2 animate-fade-in-up delay-4"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -100,7 +98,7 @@ function HomePage() {
       </div>
 
       <footer 
-        className="footer" 
+        className="footer animate-fade-in-up delay-4" 
         style={{ 
           position: 'fixed', 
           bottom: 0, 

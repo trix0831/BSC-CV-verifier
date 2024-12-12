@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './css/YourToken.css';
+import './css/fadeIn.css'; // Import fade-in CSS for animations
 import { ethers } from 'ethers';
 import { abi } from './abi';
 import { IoFilter } from "react-icons/io5";
@@ -18,7 +19,7 @@ const ChainNameToObject = {
   "AVAX": getChainInfo(43114, false),
   "BSCT": getChainInfo(97, false),
   "FUJI": getChainInfo(43113, false),
-}
+};
 
 const YourToken = () => {
   const [nftData, setNftData] = useState([]);
@@ -37,9 +38,10 @@ const YourToken = () => {
     updatedFilters[index] = { key, value };
     setMetadataFilters(updatedFilters);
   };
+
   useEffect(() => {
-    if(nftData.length > 0){
-      setMetadataFilters(Object.entries(nftData[0].metadata).map(([key, value]) => ({ key, value: "" })))
+    if (nftData.length > 0) {
+      setMetadataFilters(Object.entries(nftData[0].metadata).map(([key, value]) => ({ key, value: "" })));
     }
   }, [nftData]);
 
@@ -48,77 +50,75 @@ const YourToken = () => {
       try {
         const contractAddress = ChainNameToObject[chain].address;
         const provider = new ethers.JsonRpcProvider(ChainNameToObject[chain].rpc_url);
-        const contractABI = abi
+        const contractABI = abi;
         const contract = new ethers.Contract(contractAddress, contractABI, provider);
-          const tokenCount = await contract.tokenCount()
-          const tokens = [];
-      
-          for (let tokenId = 0; tokenId < tokenCount; tokenId++) {
-              const uri = await contract.tokenURI(tokenId);
-              const sender = await contract.tokenSender(tokenId);
-              const owner = await contract.ownerOf(tokenId)
-              const metadata = await (await fetch(uri)).json()
-              tokens.push({ tokenId: tokenId.toString(), metadata, sender, owner });
-          }
-          
-        console.log("Token details:", tokens);
-        setNftData(tokens)
-  
+        const tokenCount = await contract.tokenCount();
+        const tokens = [];
+
+        for (let tokenId = 0; tokenId < tokenCount; tokenId++) {
+          const uri = await contract.tokenURI(tokenId);
+          const sender = await contract.tokenSender(tokenId);
+          const owner = await contract.ownerOf(tokenId);
+          const metadata = await (await fetch(uri)).json();
+          tokens.push({ tokenId: tokenId.toString(), metadata, sender, owner });
+        }
+
+        setNftData(tokens);
       } catch (error) {
-          console.error("Error fetching NFTs:", error);
+        console.error("Error fetching NFTs:", error);
       }
-  }
-  
-  fetchAllNFTs();
+    }
+
+    fetchAllNFTs();
   }, [chain]);
 
   return (
-    <div 
-      className="homepage flex-col items-center w-full"
-      
-    >
-      <header className="header" style={{ textAlign: 'center' }}>
-        <p className="title">
-          NFT Gallery
-        </p>
+    <div className="homepage flex-col items-center w-full animate-fade-in-up delay-1">
+      <header className="header animate-fade-in-up delay-2" style={{ textAlign: 'center' }}>
+        <p className="title">NFT Gallery</p>
         <p className="subtitle">
-        Browse all CVV NFTs in our gallery, equipped with advanced filters to search by honoree, issuer,and more. <br/>
-        Easily discover and verify the achievements that define top talent.
+          Browse all CVV NFTs in our gallery, equipped with advanced filters to search by honoree, issuer, and more. <br />
+          Easily discover and verify the achievements that define top talent.
         </p>
       </header>
-<div className='flex items-center gap-8'>
-<FormControl variant="standard" sx={{ m: 1, minWidth: 200, "& .MuiInputLabel-root": {
-      color: "white" 
-    },
-    "& .MuiInput-underline:before": {
-      borderBottomColor: "white"
-    },
-    "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-      borderBottomColor: "white"
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "white" 
-    }}} >
-        <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">Chain</InputLabel>
-        <Select
-         sx={{color: "white"}} 
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={chain}
-          onChange={handleChange}
-          label="Chain"
-        >
-          <MenuItem value="BSC">BSC</MenuItem>
-          <MenuItem value="AVAX">AVAX</MenuItem>
-          <MenuItem value="BSCT">BSC-Test</MenuItem>
-          <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
-        </Select>
-       
-      </FormControl>  
-      {['BSC', 'BSCT'].includes(chain)?<BNBIcon size={24} color="#F0B90B" />:<AvaxIcon size={24} color="#ff0000" />}
-</div>
 
-      <div className='w-screen flex items-center justify-center gap-8 mt-0 my-12'>
+      <div className='flex items-center gap-8 animate-fade-in-up delay-3'>
+        <FormControl
+          variant="standard"
+          sx={{
+            m: 1,
+            minWidth: 200,
+            "& .MuiInputLabel-root": { color: "white" },
+            "& .MuiInput-underline:before": { borderBottomColor: "white" },
+            "& .MuiInput-underline:hover:not(.Mui-disabled):before": { borderBottomColor: "white" },
+            "& .MuiInput-underline:after": { borderBottomColor: "white" },
+          }}
+        >
+          <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">
+            Chain
+          </InputLabel>
+          <Select
+            sx={{ color: "white" }}
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={chain}
+            onChange={handleChange}
+            label="Chain"
+          >
+            <MenuItem value="BSC">BSC</MenuItem>
+            <MenuItem value="AVAX">AVAX</MenuItem>
+            <MenuItem value="BSCT">BSC-Test</MenuItem>
+            <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
+          </Select>
+        </FormControl>
+        {['BSC', 'BSCT'].includes(chain) ? (
+          <BNBIcon size={24} color="#F0B90B" />
+        ) : (
+          <AvaxIcon size={24} color="#ff0000" />
+        )}
+      </div>
+
+      <div className='w-screen flex items-center justify-center gap-8 mt-0 my-12 animate-fade-in-up delay-4'>
         <div className="w-1/4">
           <input
             type="text"
@@ -127,7 +127,7 @@ const YourToken = () => {
             onChange={(e) => setOwnerFilter(e.target.value)}
             className="input-underline"
             placeholder="Honoree address"
-            style={{color : "white"}}
+            style={{ color: "white" }}
           />
         </div>
         <div className="w-1/4">
@@ -138,57 +138,52 @@ const YourToken = () => {
             onChange={(e) => setSenderFilter(e.target.value)}
             className="input-underline"
             placeholder="Issuer address"
-            style={{color : "white"}}
+            style={{ color: "white" }}
           />
         </div>
-      <div className="w-12 flex justify-center my-4">
-        <button
-          className="text-white"
-        >
-          <IoFilter onClick={() => setShowFilters(!showFilters)}/>
-          {showFilters ? <MetadataFilter metadataFilters={metadataFilters} updateMetadataFilter={updateMetadataFilter}></MetadataFilter> : <></>}
-        </button>
+        <div className="w-12 flex justify-center my-4">
+          <button className="text-white">
+            <IoFilter onClick={() => setShowFilters(!showFilters)} />
+            {showFilters && (
+              <MetadataFilter
+                metadataFilters={metadataFilters}
+                updateMetadataFilter={updateMetadataFilter}
+              />
+            )}
+          </button>
+        </div>
       </div>
-      </div>
-      <div className="grid grid-cols-4 gap-8">
-      {nftData.length > 0 ? (
-        nftData
-        .filter((nft) => nft.metadata._address.toLowerCase().includes(ownerFilter.toLowerCase()))
-        .filter((nft) => nft.sender.toLowerCase().includes(senderFilter.toLowerCase()))
-        .filter((nft) =>
-          metadataFilters.every((filter) =>
-          nft.metadata[filter.key]
-          ?.toString()
-          .toLowerCase()
-          .includes(filter.value.toLowerCase())
-          )
-        )
-        .map((nft) => (
-          <OverflowCard
-            name={"name"}
-            competition_name={nft.metadata.competition_name}
-            award={nft.metadata.award}
-            description={nft.metadata.description}
-            honoree={nft.metadata.honoree}
-            honoree_address={nft.metadata._address}
-            image={nft.metadata.image}
-            issuer_address={nft.sender}
-            official_web={nft.metadata.official_web}
-            organizer={nft.metadata.organizer}
-            warning={nft.owner.toLowerCase() !== nft.metadata._address.toLowerCase()}
-            owner={nft.owner}
-          ></OverflowCard>
-        ))
-      ) : (
-        <p
-          style={{
-            color:"white", 
-            margin: "0 auto"
-          }}
-        >
-          No NFTs found
-        </p>
-      )}
+
+      <div className="grid grid-cols-4 gap-8 animate-fade-in-up delay-5">
+        {nftData.length > 0 ? (
+          nftData
+            .filter((nft) => nft.metadata._address.toLowerCase().includes(ownerFilter.toLowerCase()))
+            .filter((nft) => nft.sender.toLowerCase().includes(senderFilter.toLowerCase()))
+            .filter((nft) =>
+              metadataFilters.every((filter) =>
+                nft.metadata[filter.key]?.toString().toLowerCase().includes(filter.value.toLowerCase())
+              )
+            )
+            .map((nft) => (
+              <OverflowCard
+                key={nft.tokenId}
+                name={"name"}
+                competition_name={nft.metadata.competition_name}
+                award={nft.metadata.award}
+                description={nft.metadata.description}
+                honoree={nft.metadata.honoree}
+                honoree_address={nft.metadata._address}
+                image={nft.metadata.image}
+                issuer_address={nft.sender}
+                official_web={nft.metadata.official_web}
+                organizer={nft.metadata.organizer}
+                warning={nft.owner.toLowerCase() !== nft.metadata._address.toLowerCase()}
+                owner={nft.owner}
+              />
+            ))
+        ) : (
+          <p style={{ color: "white", margin: "0 auto" }}>No NFTs found</p>
+        )}
       </div>
     </div>
   );
