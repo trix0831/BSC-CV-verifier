@@ -137,36 +137,36 @@ const Compare = () => {
         </p>
       </header>
       <div className='flex items-center gap-8'>
-<FormControl variant="standard" sx={{ m: 0, minWidth: 200, "& .MuiInputLabel-root": {
-      color: "white" 
-    },
-    "& .MuiInput-underline:before": {
-      borderBottomColor: "white"
-    },
-    "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-      borderBottomColor: "white"
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "white" 
-    }}} >
-        <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">Chain</InputLabel>
-        <Select
-         sx={{color: "white"}} 
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={chain}
-          onChange={handleChange}
-          label="Chain"
-        >
-          <MenuItem value="BSC">BSC</MenuItem>
-          <MenuItem value="AVAX">AVAX</MenuItem>
-          <MenuItem value="BSCT">BSC-Test</MenuItem>
-          <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
-        </Select>
-       
-      </FormControl>  
-      {['BSC', 'BSCT'].includes(chain)?<BNBIcon size={24} color="#F0B90B" />:<AvaxIcon size={24} color="#ff0000" />}
-</div>
+        <FormControl variant="standard" sx={{ m: 0, minWidth: 200, "& .MuiInputLabel-root": {
+            color: "white" 
+          },
+          "& .MuiInput-underline:before": {
+            borderBottomColor: "white"
+          },
+          "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+            borderBottomColor: "white"
+          },
+          "& .MuiInput-underline:after": {
+            borderBottomColor: "white" 
+          }}} >
+              <InputLabel id="demo-simple-select-standard-label" className="text-white opacity-50">Chain</InputLabel>
+              <Select
+              sx={{color: "white"}} 
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={chain}
+                onChange={handleChange}
+                label="Chain"
+              >
+                <MenuItem value="BSC">BSC</MenuItem>
+                <MenuItem value="AVAX">AVAX</MenuItem>
+                <MenuItem value="BSCT">BSC-Test</MenuItem>
+                <MenuItem value="FUJI">AVAX-Test (FUJI)</MenuItem>
+              </Select>
+            
+          </FormControl>  
+            {['BSC', 'BSCT'].includes(chain)?<BNBIcon size={24} color="#F0B90B" />:<AvaxIcon size={24} color="#ff0000" />}
+      </div>
       <div
         style={{
           display: 'flex',
@@ -238,7 +238,8 @@ const Compare = () => {
                     selectedCandidate === item.address ? '#222126' : '#39383f',
                   transition: 'background-color 0.3s ease',
                   border: '1.5px solid #6EACDA', // Added light blue border
-                  position: 'relative'
+                  position: 'relative',
+                  zIndex: "0",
                 }}
                 onClick={() => handleSelectCandidate(item.address)}
               >

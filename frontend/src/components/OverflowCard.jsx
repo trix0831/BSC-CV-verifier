@@ -73,6 +73,10 @@ export default function OverflowCard({
           paddingTop: 0,
           backgroundColor: '#3d3a4e', // Set card background to gray
           border: '1.5px solid #6EACDA', // Add light blue border
+          transition: 'transform 0.3s ease', // Add this line
+          '&:hover': {
+            transform: 'scale(1.05)',       // Add this line
+          },
         }}
         onClick={() => setPage(!page)}
       >
@@ -147,6 +151,7 @@ export default function OverflowCard({
             color: '#c9c9c9', // Set text color
             borderRadius: '8px', // Add rounded corners
             border: '1.5px solid #6EACDA', // Add light blue border
+            boxShadow: '0 0 10px #6EACDA', // Add light blue shadow
           },
         }}
         
@@ -158,10 +163,11 @@ export default function OverflowCard({
           <div className="text-center text-xl font-semibold">{competition_name}</div>
           <div className="text-center text-base">Honoree: {honoree}</div>
         </DialogTitle>
+
         <Divider />
 
         <DialogContent 
-          className="flex gap-4 py-4"
+          className="flex gap-4"
           style={{ color: '#c9c9c9' }} // Set text color
         >
           <img
@@ -221,6 +227,7 @@ export default function OverflowCard({
             </div>
           </div>
         </DialogContent>
+
         <Divider />
 
         <DialogContent 

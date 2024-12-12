@@ -1,0 +1,11 @@
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: transform 0.3s ease; /* Smooth transition */
+  }
+  
+  .nav-link:hover {
+    transform: translateY(-3px); /* Shift up on hover */
+  }
